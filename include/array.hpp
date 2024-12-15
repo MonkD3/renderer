@@ -1,0 +1,20 @@
+#pragma once
+
+#include "buffer.hpp"
+#include <vector>
+
+    
+struct VAO {
+    unsigned int id;
+    std::vector<Buffer*> buffers;
+
+    VAO();
+    ~VAO();
+
+    void bind() const;
+
+    // Attach a Buffer to the Vertex Array and return its
+    // index to the user
+    int attach_buffer(Buffer* buf);
+    void enableAttribute(unsigned int loc) const ;
+};
