@@ -21,37 +21,26 @@ int main(void){
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    Shader vshd("../assets/vertex/pos.vert", VERTEX_SHADER);
-    Shader fshd("../assets/fragment/black.frag", FRAGMENT_SHADER);
+    Shader vshd("../assets/vertex/pos.vert", SHADER_VERTEX);
+    Shader fshd("../assets/fragment/black.frag", SHADER_FRAGMENT);
     ShaderProgram prog;
-    prog.attach_shader(&vshd);
-    prog.attach_shader(&fshd);
+    prog.attachShader(&vshd);
+    prog.attachShader(&fshd);
     prog.compile();
 
-    float pos[8] = {
+    float pos[6] = {
          0.5f,  0.5f,  // top right
          0.5f, -0.5f,  // bottom right
         -0.5f, -0.5f,  // bottom left
-        -0.5f,  0.5f   // top left 
     };
-    unsigned int indices[6] = {
-        0, 1, 3,   // first triangle
-        1, 2, 3    // second triangle
-    };  
-
     VAO vao;
     vao.bind();
 
     VBO vbo;
     vbo.bind();
     vbo.setData(sizeof(pos), pos);
-    vao.attach_buffer(&vbo);
-
-    EBO ebo;
-    ebo.bind();
-    ebo.setData(sizeof(indices), indices);
-    ebo.setAttribute(0, 2, BUF_FLOAT, false, 2 * sizeof(float), (void*)0);
-    vao.attach_buffer(&ebo);
+    vbo.setAttribute(0, 2, BUF_FLOAT, false, 2 * sizeof(float), (void*)0);
+    vao.attachBuffer(&vbo);
     vao.enableAttribute(0);
 
     prog.use();
@@ -59,7 +48,7 @@ int main(void){
         glfwPollEvents();
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
         glfwSwapBuffers(window.win);
     }
 

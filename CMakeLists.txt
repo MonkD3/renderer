@@ -1,9 +1,6 @@
-cmake_minimum_required(
-    VERSION 3.10
-)
+cmake_minimum_required(VERSION 3.10)
 
-project(
-    Renderer
+project(Renderer
     CXX
     C
 )
@@ -27,6 +24,12 @@ find_library(
     REQUIRED
 )
 
+find_package( 
+    glm 
+    NAMES glm
+    REQUIRED
+)
+
 add_subdirectory(./glad/)
 
 aux_source_directory(
@@ -39,10 +42,11 @@ target_include_directories(
 
 target_compile_options(
     renderer PRIVATE
-    -Wall -Werror -Wextra
+    -Wall -Werror -Wextra -DCMAKE_HOME_DIRECTORY="${CMAKE_HOME_DIRECTORY}"
 )
 
-target_link_libraries(renderer PUBLIC glfw OpenGL glad)
+
+target_link_libraries(renderer PUBLIC glfw glm OpenGL glad)
 
 install(
     TARGETS renderer

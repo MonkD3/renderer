@@ -66,7 +66,7 @@ ShaderProgram::~ShaderProgram() {
     glDeleteProgram(id);
 }
 
-void ShaderProgram::attach_shader(Shader* s){
+void ShaderProgram::attachShader(Shader* s){
     shd.push_back(s);
 }
 

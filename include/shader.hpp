@@ -6,9 +6,9 @@
 
 enum ShaderType {
     NO_SHADER = 0,
-    GEOMETRY_SHADER = GL_GEOMETRY_SHADER,
-    VERTEX_SHADER = GL_VERTEX_SHADER,
-    FRAGMENT_SHADER = GL_FRAGMENT_SHADER,
+    SHADER_GEOMETRY = GL_GEOMETRY_SHADER,
+    SHADER_VERTEX   = GL_VERTEX_SHADER,
+    SHADER_FRAGMENT = GL_FRAGMENT_SHADER,
 };
 
 struct Shader {
@@ -33,7 +33,7 @@ struct ShaderProgram {
     ShaderProgram();
     ~ShaderProgram();
 
-    void attach_shader(Shader* s);
+    void attachShader(Shader* s);
     void compile();
     void use() const;
 };
