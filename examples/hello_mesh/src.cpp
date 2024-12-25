@@ -1,11 +1,8 @@
-#include "buffer.hpp"
 #include "glad/gl.h"
-#include "shader.hpp"
 #include "window.hpp"
-#include "model.hpp"
-#include <renderer.hpp>
-#include <buffer.hpp>
-#include <array.hpp>
+#include "models/trimesh.hpp"
+
+#include <cstdint>
 #include <cstdio>
 #include <cstdlib>
 #include <vector>
@@ -36,7 +33,17 @@ int main(void){
         3, 4, 5
     });
 
-    TriMesh mesh(2, positions, indices);
+    std::vector<uint8_t> colors ({
+        255, 0, 0,
+        0, 255, 0,
+        0, 0, 255,
+        255, 255, 0,
+        255, 0, 255,
+        0, 255, 255
+    });
+
+    TriMesh mesh(2, positions, indices, colors);
+
     while (!glfwWindowShouldClose(window.win)){
         glfwPollEvents();
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
