@@ -18,7 +18,7 @@ void VAO::bind() const {
     glBindVertexArray(id);
 }
 
-int VAO::attachBuffer(Buffer* buf){
+unsigned int VAO::attachBuffer(Buffer* buf){
     for (BufferAttribute& ba : buf->buflayout){
         DEBUG("Adding attribute %u from buffer %u to array %u", ba.loc, buf->id, id);
         glVertexAttribPointer(

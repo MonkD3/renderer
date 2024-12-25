@@ -8,10 +8,6 @@ project(Renderer
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 set(BUILD_SHARED_LIBS ON)
 
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    add_compile_options(-DVERBOSE=5)
-endif()
-
 find_package(
     glfw
     NAMES glfw GLFW glfw3
@@ -32,18 +28,21 @@ find_package(
 
 add_subdirectory(./glad/)
 
-aux_source_directory(
-    ./src/ RENDERER_SRC
-)
-add_library(renderer SHARED ${RENDERER_SRC})
-target_include_directories(
-    renderer PUBLIC include
-)
+# Initialize an empty string for the source files
+add_library(renderer SHARED)
+add_subdirectory(./src)
+add_subdirectory(./include)
 
 target_compile_options(
     renderer PRIVATE
     -Wall -Werror -Wextra -DCMAKE_HOME_DIRECTORY="${CMAKE_HOME_DIRECTORY}"
 )
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    target_compile_options(
+        renderer PRIVATE 
+        -DVERBOSE=5
+    )
+endif()
 
 
 target_link_libraries(renderer PUBLIC glfw glm OpenGL glad)
