@@ -10,9 +10,6 @@
 #include <cstdlib>
 #include <vector>
 
-
-void framebufferSizeCallback(__attribute__((unused)) GLFWwindow* window, int width, int height){ glViewport(0, 0, width, height); }  
-
 float fun(float const x, float const y){
     return std::sin(2.f*M_PI*x)*std::cos(2.f*M_PI*y);// std::exp(- (x*x + y*y)/0.1f);
 }
@@ -26,9 +23,8 @@ void cmap(float const val, uint8_t* color){
 int main(void){
 
 
-    Window window(800, 600, "Hot-reloading shader example", NULL, NULL);
+    Window window(800, 600, "Hello renderer", NULL, NULL);
 
-    glfwSetFramebufferSizeCallback(window.win, framebufferSizeCallback);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);

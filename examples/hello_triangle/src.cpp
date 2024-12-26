@@ -7,15 +7,15 @@
 #include <cstdio>
 #include <cstdlib>
 
-
-void framebufferSizeCallback(__attribute__((unused)) GLFWwindow* window, int width, int height){ glViewport(0, 0, width, height); }  
+void myMouseButtonCallback(Window* win){
+    if (win->windata->m1_pressed) win->useDefaultCursorPositionCallback = !win->useDefaultCursorPositionCallback;
+}
 
 int main(void){
 
+    Window window(800, 600, "Hello renderer", NULL, NULL);
+    window.mouseButtonCallback = myMouseButtonCallback;
 
-    Window window(800, 600, "Hot-reloading shader example", NULL, NULL);
-
-    glfwSetFramebufferSizeCallback(window.win, framebufferSizeCallback);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
