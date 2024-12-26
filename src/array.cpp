@@ -36,5 +36,6 @@ unsigned int VAO::attachBuffer(Buffer* buf){
 }
 
 void VAO::enableAttribute(unsigned int loc) const {
+    DEBUG("Enable attribute %u of vertex array %u", loc, id);
     glEnableVertexAttribArray(loc);
 }
