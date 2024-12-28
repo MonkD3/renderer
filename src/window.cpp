@@ -3,6 +3,7 @@
 #include <sys/cdefs.h>
 
 #include "window.hpp"
+#include "glad/gl.h"
 #include "log.h"
 
 void defaultGLFWMouseButtonCallback(GLFWwindow* window, int button, int action, __attribute_maybe_unused__ int mods){
@@ -70,13 +71,18 @@ Window::Window(int _width, int _height, char const* _name, Monitor* _monitor, Wi
     }
     glfwMakeContextCurrent(win);
 
+
     int const version = gladLoadGL(glfwGetProcAddress);
     if (version == 0) {
         glfwTerminate();
         CRITICAL_ERROR("Failed to initialize GLAD");
         exit(0);
     }
-    DEBUG("Loaded OpenGL %d.%d with GLAD for windos '%s'", GLAD_VERSION_MAJOR(version), GLAD_VERSION_MINOR(version), name);
+    DEBUG("Loaded OpenGL %d.%d with GLAD for window '%s'", GLAD_VERSION_MAJOR(version), GLAD_VERSION_MINOR(version), name);
+
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, GLAD_VERSION_MAJOR(version));
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, GLAD_VERSION_MINOR(version));
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     windata = new WindowData;
     windata->frame_h = height;

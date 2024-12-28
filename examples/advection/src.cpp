@@ -46,10 +46,6 @@ int main(void){
 
     Window window(800, 600, "Hello renderer", NULL, NULL);
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
     float constexpr W = 2.f;
     float constexpr H = 2.f;
     float constexpr x0 = -1.0f;
