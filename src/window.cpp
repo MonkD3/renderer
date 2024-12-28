@@ -21,7 +21,7 @@ void defaultGLFWMouseButtonCallback(GLFWwindow* window, int button, int action, 
     }
 
     // Call the user-defined callback
-    if (win->mouseButtonCallback) win->mouseButtonCallback(win);
+    if (win->mouseButtonCallback) win->mouseButtonCallback(win, button, action, mods);
 
 }
 
@@ -30,13 +30,12 @@ void defaultGLFWCursorPositionCallback(GLFWwindow* window, double x, double y){
     Window* win = windata->win;
 
     if (win->useDefaultCursorPositionCallback){
-        printf("Inside lib : %f, %f\n", x, y);
         windata->mouse_screen_xy[0] = x;
         windata->mouse_screen_xy[1] = y;
     }
 
     // Call the user-defined callback
-    if (win->cursorPosCallback) win->cursorPosCallback(win);
+    if (win->cursorPosCallback) win->cursorPosCallback(win, x, y);
 }
 
 void defaultGLFWFrameBufferSizeCallback(GLFWwindow* window, int width, int height) {
@@ -50,7 +49,7 @@ void defaultGLFWFrameBufferSizeCallback(GLFWwindow* window, int width, int heigh
     }
 
     // Call the user-defined callback
-    if (win->framebufferSizeCallback) win->framebufferSizeCallback(win);
+    if (win->framebufferSizeCallback) win->framebufferSizeCallback(win, width, height);
 }
 
 

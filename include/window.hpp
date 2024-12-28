@@ -1,5 +1,6 @@
 #pragma once
 
+#include "log.h"
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
 #include <glm/vec2.hpp>
@@ -28,9 +29,9 @@ struct WindowData {
     bool m2_pressed;
 };
 
-typedef void (*cursorPosCallbackFunc)(Window*);
-typedef void (*framebufferSizeCallbackFunc)(Window*);
-typedef void (*mouseButtonCallbackFunc)(Window*);
+typedef void (*cursorPosCallbackFunc)(Window*, double, double);
+typedef void (*framebufferSizeCallbackFunc)(Window*, int, int);
+typedef void (*mouseButtonCallbackFunc)(Window*, int, int, int);
 
 enum callbackType {
     CALLBACK_CURSOR_POS = 0,
@@ -58,6 +59,7 @@ struct Window {
     ~Window();
 
     void inline setDefaultCallbackOff(callbackType ct) {
+        DEBUG("Setting default callback %d OFF", ct);
         switch (ct) {
             case CALLBACK_CURSOR_POS:
                 useDefaultCursorPositionCallback = false;
