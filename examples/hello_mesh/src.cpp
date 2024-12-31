@@ -39,6 +39,8 @@ int main(void){
         glfwPollEvents();
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+
+        glUniformMatrix4fv(glGetUniformLocation(mesh.prog->id, "mvp"), 1, false, &(window.windata->mvp[0][0]));
         mesh.draw();
         glfwSwapBuffers(window.win);
     }

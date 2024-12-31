@@ -25,6 +25,7 @@ struct WindowData {
     void* user_data; // Attached user data
     Window* win; // The window owning the data
 
+    float zoom;
     bool m1_pressed;
     bool m2_pressed;
 };
@@ -32,11 +33,13 @@ struct WindowData {
 typedef void (*cursorPosCallbackFunc)(Window*, double, double);
 typedef void (*framebufferSizeCallbackFunc)(Window*, int, int);
 typedef void (*mouseButtonCallbackFunc)(Window*, int, int, int);
+typedef void (*mouseScrollCallbackFunc)(Window*, double, double);
 
 enum callbackType {
     CALLBACK_CURSOR_POS = 0,
     CALLBACK_FRAMEBUFFER_SIZE = 1,
-    CALLBACK_MOUSE_BUTTON = 2
+    CALLBACK_MOUSE_BUTTON = 2,
+    CALLBACK_MOUSE_SCROLL = 3
 };
 
 struct Window {
@@ -50,10 +53,12 @@ struct Window {
     bool useDefaultCursorPositionCallback = true;
     bool useDefaultFrameBufferSizeCallback = true;
     bool useDefaultMouseButtonCallback = true;
+    bool useDefaultMouseScrollCallback = true;
     
     cursorPosCallbackFunc cursorPosCallback;
     framebufferSizeCallbackFunc framebufferSizeCallback;
     mouseButtonCallbackFunc mouseButtonCallback;
+    mouseScrollCallbackFunc mouseScrollCallback;
 
     Window(int _width, int _height, char const* _name, Monitor* _monitor, Window* _share);
     ~Window();
@@ -70,6 +75,9 @@ struct Window {
             case CALLBACK_MOUSE_BUTTON:
                 useDefaultMouseButtonCallback = false;
                 break;
+            case CALLBACK_MOUSE_SCROLL:
+                useDefaultMouseScrollCallback = false;
+                break;
         }
     };
     void inline setDefaultCallbackOn(callbackType ct) {
@@ -82,6 +90,9 @@ struct Window {
                 break;
             case CALLBACK_MOUSE_BUTTON:
                 useDefaultMouseButtonCallback = true;
+                break;
+            case CALLBACK_MOUSE_SCROLL:
+                useDefaultMouseScrollCallback = true;
                 break;
         }
     };

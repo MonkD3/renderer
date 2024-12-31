@@ -8,32 +8,13 @@
 #include <cstdlib>
 #include <sys/cdefs.h>
 
-void myMouseButtonCallback(Window* win, __attribute_maybe_unused__ int button, __attribute_maybe_unused__ int action, __attribute_maybe_unused__ int mods){
-    if (win->windata->m1_pressed) win->useDefaultCursorPositionCallback = !win->useDefaultCursorPositionCallback;
-
-}
-
-void myCursosPositionCalback(Window* win, double x, double y){
-    printf(
-        "=========================================\n"
-        "Cursor position from renderer : (%f,%f)\n"
-        "Cursor position from user callback : (%f, %f)\n"
-        "Is default callback active : %d\n"
-        "=========================================\n"
-        , win->windata->mouse_screen_xy[0], win->windata->mouse_screen_xy[1], x, y, win->useDefaultCursorPositionCallback);
-}
-
 int main(void){
 
+    // Initializing a window also initializes GLFW and GLAD
+    // automatically
     Window window(800, 600, "Hello renderer", NULL, NULL);
-    window.mouseButtonCallback = myMouseButtonCallback;
-    window.cursorPosCallback = myCursosPositionCalback;
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-    Shader vshd("../assets/vertex/pos.vert", SHADER_VERTEX);
+    Shader vshd("../assets/vertex/pos_col.vert", SHADER_VERTEX);
     Shader fshd("../assets/fragment/white.frag", SHADER_FRAGMENT);
     ShaderProgram prog;
     prog.attachShader(&vshd);
@@ -45,6 +26,13 @@ int main(void){
          0.5f, -0.5f,  // bottom right
         -0.5f, -0.5f,  // bottom left
     };
+
+    // Define the buffers and data that will be rendered, just as done classically with OpenGL :
+    // 1) bind a Vertex Array Object (VAO)
+    // 2) bind a Vertex Buffer Object (VBO)
+    // 3) define how the data in the VBO is laid out 
+    // 4) repeat steps 2-3 for every attributes
+
     VAO vao;
     vao.bind();
 
@@ -60,6 +48,17 @@ int main(void){
         glfwPollEvents();
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+
+        // The renderer offers default user-interactions such as 
+        // dragging and zooming. The related matrix transform is 
+        // located in the "mvp" attributes of the window data.
+        // If you do not want it, you can either 
+        // 1) not use the matrix transform (the transform is still 
+        // computed)
+        // 2) disable the default callbacks (the transform is not 
+        // computed anymore)
+        glUniformMatrix4fv(glGetUniformLocation(prog.id, "mvp"), 1, false, &(window.windata->mvp[0][0]));
+
         glDrawArrays(GL_TRIANGLES, 0, 3);
         glfwSwapBuffers(window.win);
     }
