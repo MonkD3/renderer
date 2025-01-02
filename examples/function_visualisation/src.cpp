@@ -70,12 +70,13 @@ int main(void){
     }
 
     TriMesh mesh(2, positions, indices, colors);
+    window.addModel(&mesh);
 
     while (!glfwWindowShouldClose(window.win)){
         glfwPollEvents();
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
-        mesh.draw();
+        window.draw();
         glfwSwapBuffers(window.win);
     }
 

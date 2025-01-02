@@ -50,6 +50,6 @@ struct Model {
     // @param bufData : a pointer to the data
     void setBuffer(unsigned int const bufIndex, size_t const bufSize, void const* bufData);
 
-    void draw() const;
+    virtual void draw() const;
 };
 

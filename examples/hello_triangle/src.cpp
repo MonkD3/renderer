@@ -51,13 +51,13 @@ int main(void){
 
         // The renderer offers default user-interactions such as 
         // dragging and zooming. The related matrix transform is 
-        // located in the "mvp" attributes of the window data.
+        // located in the "mvp" attributes of the window scene.
         // If you do not want it, you can either 
         // 1) not use the matrix transform (the transform is still 
         // computed)
         // 2) disable the default callbacks (the transform is not 
         // computed anymore)
-        glUniformMatrix4fv(glGetUniformLocation(prog.id, "mvp"), 1, false, &(window.windata->mvp[0][0]));
+        glUniformMatrix4fv(glGetUniformLocation(prog.id, "mvp"), 1, false, &(window.scene->mvp[0][0]));
 
         glDrawArrays(GL_TRIANGLES, 0, 3);
         glfwSwapBuffers(window.win);

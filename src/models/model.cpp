@@ -55,4 +55,4 @@ unsigned int Model::addBuffer(Buffer* buf){
     return bufIndices.size() - 1;
 }
 
-
+void Model::draw() const { }

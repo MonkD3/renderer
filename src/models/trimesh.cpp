@@ -89,6 +89,7 @@ void TriMesh::setColors(std::vector<uint8_t>& _colors){
 }
 
 void TriMesh::draw() const {
+    DEBUG("Drawing trimesh with VAO %u", vao.id);
     vao.bind();
     prog->use();
 

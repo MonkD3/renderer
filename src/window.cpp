@@ -8,10 +8,23 @@
 #include "window.hpp"
 #include "glad/gl.h"
 #include "log.h"
+#include "scene.hpp"
+
+void defaultGLFWKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods){
+    WindowData* windata = (WindowData*) glfwGetWindowUserPointer(window);
+    Window* win = windata->win;
+
+    if (win->useDefaultKeyCallback){
+        printf("Key pressed : %c, scancode %d, action %d, mods %d\n", key, scancode, action, mods);
+    }
+    
+    if (win->keyCallback) win->keyCallback(win, key, scancode, action, mods);
+}
 
 void defaultGLFWScrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
     WindowData* windata = (WindowData*) glfwGetWindowUserPointer(window);
     Window* win = windata->win;
+    Scene* scene = win->scene;
 
     if (win->useDefaultMouseScrollCallback){
         int const w = windata->frame_w;
@@ -44,14 +57,14 @@ void defaultGLFWScrollCallback(GLFWwindow* window, double xoffset, double yoffse
         // DOES NOT scale the translation
         for (int i = 0; i < 3; i++){
             for (int j = 0; j < 3; j++){
-                windata->mvp[i][j] *= scaling;
+                scene->mvp[i][j] *= scaling;
             }
         }
 
-        windata->mvp[3][0] = (windata->mvp[3][0] - xpos) * scaling + xpos;
-        windata->mvp[3][1] = (windata->mvp[3][1] - ypos) * scaling + ypos;
+        scene->mvp[3][0] = (scene->mvp[3][0] - xpos) * scaling + xpos;
+        scene->mvp[3][1] = (scene->mvp[3][1] - ypos) * scaling + ypos;
 
-        windata->imvp = glm::inverse(windata->mvp);
+        scene->imvp = glm::inverse(scene->mvp);
     }
 
     // Call the user-defined callback
@@ -80,6 +93,7 @@ void defaultGLFWMouseButtonCallback(GLFWwindow* window, int button, int action, 
 void defaultGLFWCursorPositionCallback(GLFWwindow* window, double x, double y){
     WindowData* windata = (WindowData*) glfwGetWindowUserPointer(window);
     Window* win = windata->win;
+    Scene* scene = win->scene;
 
     int const w = windata->frame_w;
     int const h = windata->frame_h;
@@ -98,9 +112,9 @@ void defaultGLFWCursorPositionCallback(GLFWwindow* window, double x, double y){
 
         // Translate if m1 is held down
         if (windata->m1_pressed) {
-            windata->mvp[3][0] -= prev_x_n - x_n;
-            windata->mvp[3][1] -= prev_y_n - y_n;
-            windata->imvp = glm::inverse(windata->mvp);
+            scene->mvp[3][0] -= prev_x_n - x_n;
+            scene->mvp[3][1] -= prev_y_n - y_n;
+            scene->imvp = glm::inverse(scene->mvp);
         }
 
         // Update
@@ -115,6 +129,7 @@ void defaultGLFWCursorPositionCallback(GLFWwindow* window, double x, double y){
 void defaultGLFWFrameBufferSizeCallback(GLFWwindow* window, int width, int height) {
     WindowData* windata = (WindowData*) glfwGetWindowUserPointer(window);
     Window* win = windata->win;
+    Scene* scene = win->scene;
 
     if (win->useDefaultFrameBufferSizeCallback){
         glViewport(0, 0, width, height); 
@@ -127,8 +142,8 @@ void defaultGLFWFrameBufferSizeCallback(GLFWwindow* window, int width, int heigh
         // i.e. The ratio of lengths in x is : newHeight / currentHeight 
         //      so we scale the x axis by the inverse ratio : newHeight / currentHeight 
         for (int i = 0; i < 3; i++) {
-            windata->mvp[i][0] *= wRatio;
-            windata->mvp[i][1] *= hRatio;
+            scene->mvp[i][0] *= wRatio;
+            scene->mvp[i][1] *= hRatio;
         }
 
         windata->aspectRatio = (float) width / height;
@@ -172,24 +187,25 @@ Window::Window(int _width, int _height, char const* _name, Monitor* _monitor, Wi
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, GLAD_VERSION_MINOR(version));
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+    // ========================= Initialize scene =============================
+    scene = new Scene();
+
+    // Get general aspect-ratio of the monitor
+    const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+    float const aspectRatio = (float) mode->width / mode->height; 
+
+    scene->mvp = glm::scale(scene->mvp, glm::vec3(aspectRatio,1.0f, 1.0f)); // Apply the aspect-ratio
+    scene->imvp = glm::inverse(scene->mvp); // Get the inverse of the transform
+
     // ========================= Initialize window data =======================
     windata = new WindowData;
     glfwSetWindowUserPointer(win, windata);
 
+    windata->aspectRatio = aspectRatio;
     windata->frame_h = height;
     windata->frame_w = width;
-
-    // Get general aspect-ratio of the monitor
-    const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-    windata->aspectRatio = (float) mode->width / mode->height;
-
-    windata->win = this;
-
     windata->zoom = 1.0f;
-    windata->mvp = glm::mat4(1.0f); // Identity matrix
-    windata->mvp = glm::scale(windata->mvp, glm::vec3(windata->aspectRatio,1.0f, 1.0f)); // Apply the aspect-ratio
-
-    windata->imvp = glm::inverse(windata->mvp); // Get the inverse of the transform
+    windata->win = this;
 
     // ======================== Attach default callbacks ======================
     // Set the custom callback to null
@@ -197,18 +213,28 @@ Window::Window(int _width, int _height, char const* _name, Monitor* _monitor, Wi
     framebufferSizeCallback = NULL;
     mouseButtonCallback = NULL;
     mouseScrollCallback = NULL;
+    keyCallback = NULL;
 
     // Attach the default callbacks to the GLFW window
     glfwSetCursorPosCallback(win, defaultGLFWCursorPositionCallback);
     glfwSetFramebufferSizeCallback(win, defaultGLFWFrameBufferSizeCallback);
     glfwSetMouseButtonCallback(win, defaultGLFWMouseButtonCallback);
     glfwSetScrollCallback(win, defaultGLFWScrollCallback);
+    glfwSetKeyCallback(win, defaultGLFWKeyCallback);
+
 }
 
 Window::~Window(){
     DEBUG("Destroying window '%s'", name);
     glfwDestroyWindow(win);
     delete windata;
+    delete scene;
 }
 
+size_t Window::addModel(Model* m, bool isRendered){
+    return scene->addModel(m, isRendered);
+}
 
+void Window::draw() const {
+    scene->draw();
+}
