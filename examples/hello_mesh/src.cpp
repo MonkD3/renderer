@@ -2,6 +2,7 @@
 #include "window.hpp"
 #include "models/trimesh.hpp"
 
+#include <GLFW/glfw3.h>
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
@@ -39,6 +40,13 @@ int main(void){
         glfwPollEvents();
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+
+        if (glfwGetKey(window.win, GLFW_KEY_V) == GLFW_PRESS){
+            mesh.setColors(255, 255, 255);
+        } 
+        if (glfwGetKey(window.win, GLFW_KEY_C) == GLFW_PRESS) {
+            mesh.setColors(colors);
+        }
 
         glUniformMatrix4fv(glGetUniformLocation(mesh.prog->id, "mvp"), 1, false, &(window.windata->mvp[0][0]));
         mesh.draw();

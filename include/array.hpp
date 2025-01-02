@@ -16,5 +16,6 @@ struct VAO {
     // Attach a Buffer to the Vertex Array and return its
     // index to the user
     unsigned int attachBuffer(Buffer* buf);
-    void enableAttribute(unsigned int loc) const ;
+    void enableAttribute(unsigned int loc) const;
+    void disableAttribute(unsigned int loc) const;
 };

@@ -39,3 +39,9 @@ void VAO::enableAttribute(unsigned int loc) const {
     DEBUG("Enable attribute %u of vertex array %u", loc, id);
     glEnableVertexAttribArray(loc);
 }
+
+void VAO::disableAttribute(unsigned int loc) const {
+    DEBUG("Disable attribute %u of vertex array %u", loc, id);
+    glDisableVertexAttribArray(loc);
+    
+}

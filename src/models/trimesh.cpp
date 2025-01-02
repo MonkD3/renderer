@@ -38,7 +38,7 @@ TriMesh::TriMesh(int const dim, std::vector<float>& _nodeCoords, std::vector<int
     col->bind();
     col->setData(colors.size()*sizeof(colors[0]), colors.data());
     col->setAttribute(1, 3, BUF_UBYTE, true, 0, 0);
-    bufIndices[MESH_COL] = addBuffer(col);
+    bufIndices[MESH_COL] = vao.attachBuffer(col);
     vao.enableAttribute(1);
 }
 
@@ -55,26 +55,37 @@ void TriMesh::setNodes(std::vector<float>& newNodes){
 }
 
 void TriMesh::setColors(uint8_t R, uint8_t G, uint8_t B) {
+    colors = std::vector<uint8_t>({R, G, B});
+
     if (colType != COLOR_CONSTANT) {
-        fprintf(stderr, "Cannot change node-coloring type. You are trying to set a constant color on a TriMesh that uses a different node coloring.\n");
-        return;
+        DEBUG("Changing node-coloring type of trimesh to COLOR_CONSTANT");
+        colType = COLOR_CONSTANT;
+        vao.bind();
+        vao.disableAttribute(1);
     }
-    colors[0] = R;
-    colors[1] = G;
-    colors[2] = B;
 
     prog->use();
     glVertexAttrib3f(1, R/255.f, G/255.f, B/255.f);
 }
 
 void TriMesh::setColors(std::vector<uint8_t>& _colors){
-    if (colType != COLOR_NODE) {
-        fprintf(stderr, "Cannot change node-coloring type. You are trying to set a per-node color on a TriMesh that uses a different node coloring.\n");
-        return;
+    vao.bind();
+    colors = _colors;
+    if (vao.buffers[bufIndices[MESH_COL]]){
+        setBuffer(MESH_COL, colors.size()*sizeof(colors[0]), colors.data());
+    } else {
+        VBO* col = new VBO;
+        col->bind();
+        col->setData(colors.size()*sizeof(colors[0]), colors.data());
+        col->setAttribute(1, 3, BUF_UBYTE, true, 0, 0);
+        bufIndices[MESH_COL] = addBuffer(col);
     }
 
-    colors = _colors;
-    setBuffer(MESH_COL, colors.size()*sizeof(colors[0]), colors.data());
+    if (colType != COLOR_NODE) {
+        DEBUG("Changing node-coloring type of trimesh to COLOR_NODE");
+        colType = COLOR_NODE;
+        vao.enableAttribute(1);
+    }
 }
 
 void TriMesh::draw() const {
