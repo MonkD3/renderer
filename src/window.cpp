@@ -98,7 +98,8 @@ void defaultGLFWCursorPositionCallback(GLFWwindow* window, double x, double y){
 
         // Translate if m1 is held down
         if (windata->m1_pressed) {
-            windata->mvp = glm::translate(windata->mvp, glm::vec3(x_n - prev_x_n, y_n - prev_y_n, 0.0f));
+            windata->mvp[3][0] -= prev_x_n - x_n;
+            windata->mvp[3][1] -= prev_y_n - y_n;
             windata->imvp = glm::inverse(windata->mvp);
         }
 
@@ -117,6 +118,20 @@ void defaultGLFWFrameBufferSizeCallback(GLFWwindow* window, int width, int heigh
 
     if (win->useDefaultFrameBufferSizeCallback){
         glViewport(0, 0, width, height); 
+
+        float const wRatio = (float) windata->frame_w / width;
+        float const hRatio = (float) windata->frame_h / height;
+
+        // Keep the area of models constant. We do this by scaling with the 
+        // inverse of the ratio of lengths in x and y directions
+        // i.e. The ratio of lengths in x is : newHeight / currentHeight 
+        //      so we scale the x axis by the inverse ratio : newHeight / currentHeight 
+        for (int i = 0; i < 3; i++) {
+            windata->mvp[i][0] *= wRatio;
+            windata->mvp[i][1] *= hRatio;
+        }
+
+        windata->aspectRatio = (float) width / height;
         windata->frame_h = height;
         windata->frame_w = width;
     }
