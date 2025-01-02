@@ -116,6 +116,25 @@ void defaultGLFWCursorPositionCallback(GLFWwindow* window, double x, double y){
             scene->mvp[3][1] -= prev_y_n - y_n;
             scene->imvp = glm::inverse(scene->mvp);
         }
+        // Rotate if m2 is held down
+        else if (windata->m2_pressed) {
+            // Compute normal to movement
+            double x_normal = - (y_n - prev_y_n);
+            double y_normal = x_n - prev_x_n;
+            double d = 100.f*hypot(x_n - prev_x_n, y_n - prev_y_n);
+
+            // Fun things of linear algebra :
+            // Suppose R is a rotation matrix around axis a.
+            // Mutliplying R with a transformation matrix T does not 
+            // rotate the space around axis a, it actually rotates the
+            // space around axis Ta ! 
+            // Therefore, to rotate the space around a we need to apply the 
+            // rotation matrix around axis b = T^{-1}a, then : Tb = TT^{-1}a = a
+            glm::vec4 rotAxis = scene->imvp * glm::vec4(x_normal, y_normal, 0.0f, 0.0f);
+            scene->mvp = glm::rotate(scene->mvp, glm::radians((float)d), glm::vec3(rotAxis[0], rotAxis[1], rotAxis[2]));  
+
+            scene->imvp = glm::inverse(scene->mvp);
+        }
 
         // Update
         prev_x_n = x_n;
@@ -194,7 +213,7 @@ Window::Window(int _width, int _height, char const* _name, Monitor* _monitor, Wi
     const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
     float const aspectRatio = (float) mode->width / mode->height; 
 
-    scene->mvp = glm::scale(scene->mvp, glm::vec3(aspectRatio,1.0f, 1.0f)); // Apply the aspect-ratio
+    scene->mvp = glm::scale(scene->mvp, glm::vec3(1.0f, aspectRatio, 1.0f)); // Apply the aspect-ratio
     scene->imvp = glm::inverse(scene->mvp); // Get the inverse of the transform
 
     // ========================= Initialize window data =======================

@@ -22,3 +22,8 @@ add_executable(
     advect
     ./advection/src.cpp
 )
+
+add_executable(
+    rotate
+    ./rotate_3D_test/src.cpp 
+)
