@@ -27,3 +27,13 @@ add_executable(
     rotate
     ./rotate_3D_test/src.cpp 
 )
+
+add_executable(
+    tet
+    ./hello_tet/src.cpp
+)
+
+add_executable(
+    balls
+    ./moving_balls/src.cpp
+)

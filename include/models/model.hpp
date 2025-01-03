@@ -19,6 +19,13 @@ enum meshBufType {
     MESH_USER = 16, // Special value : Starting index of user-defined buffers
 };
 
+enum ballsBufType {
+    BALL_CENTER = 0, // Index of Center position buffer 
+    BALL_RADIUS = 1, // Index of radius position buffer 
+    BALL_COL    = 2, // Index of color position buffer
+    BALL_USER   = 16, // Special value : Starting index of user-defined buffers 
+};
+
 struct Model {
     // Vertex Array Object describing the layout of the underlying buffers
     VAO vao;    

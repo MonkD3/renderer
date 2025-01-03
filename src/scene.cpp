@@ -32,8 +32,16 @@ void Scene::draw() const {
             // Load the scene transform in the shader program of the model
             ShaderProgram const* prog = model->prog;
             prog->use();
-            unsigned int mvpLoc = glGetUniformLocation(prog->id, "mvp");
-            glUniformMatrix4fv(mvpLoc, 1, false, &(mvp[0][0]));
+            model->vao.bind();
+            int mvpLoc = glGetUniformLocation(prog->id, "mvp");
+            if (mvpLoc >= 0) {
+                glUniformMatrix4fv(mvpLoc, 1, false, &(mvp[0][0]));
+            }
+
+            int imvpLoc = glGetUniformLocation(prog->id, "imvp");
+            if (imvpLoc >= 0) {
+                glUniformMatrix4fv(imvpLoc, 1, false, &(imvp[0][0]));
+            }
 
             // Draw the model
             model->draw();
