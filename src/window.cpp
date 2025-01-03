@@ -156,6 +156,9 @@ void defaultGLFWFrameBufferSizeCallback(GLFWwindow* window, int width, int heigh
         float const wRatio = (float) windata->frame_w / width;
         float const hRatio = (float) windata->frame_h / height;
 
+        /*float const curAspectRatio = windata->aspectRatio;*/
+        float const newAspectRatio = (float) width / height;
+
         // Keep the area of models constant. We do this by scaling with the 
         // inverse of the ratio of lengths in x and y directions
         // i.e. The ratio of lengths in x is : newHeight / currentHeight 
@@ -165,7 +168,9 @@ void defaultGLFWFrameBufferSizeCallback(GLFWwindow* window, int width, int heigh
             scene->mvp[i][1] *= hRatio;
         }
 
-        windata->aspectRatio = (float) width / height;
+        scene->imvp = glm::inverse(scene->mvp);
+
+        windata->aspectRatio = newAspectRatio;
         windata->frame_h = height;
         windata->frame_w = width;
     }
@@ -209,9 +214,11 @@ Window::Window(int _width, int _height, char const* _name, Monitor* _monitor, Wi
     // ========================= Initialize scene =============================
     scene = new Scene();
 
-    // Get general aspect-ratio of the monitor
-    const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-    float const aspectRatio = (float) mode->width / mode->height; 
+    // Get general aspect-ratio of the buffer
+    int frame_w;
+    int frame_h;
+    glfwGetFramebufferSize(win, &frame_w, &frame_h);
+    float const aspectRatio = (float)frame_w / frame_h;
 
     scene->mvp = glm::scale(scene->mvp, glm::vec3(1.0f, aspectRatio, 1.0f)); // Apply the aspect-ratio
     scene->imvp = glm::inverse(scene->mvp); // Get the inverse of the transform
@@ -221,8 +228,8 @@ Window::Window(int _width, int _height, char const* _name, Monitor* _monitor, Wi
     glfwSetWindowUserPointer(win, windata);
 
     windata->aspectRatio = aspectRatio;
-    windata->frame_h = height;
-    windata->frame_w = width;
+    windata->frame_h = frame_h;
+    windata->frame_w = frame_w;
     windata->zoom = 1.0f;
     windata->win = this;
 
