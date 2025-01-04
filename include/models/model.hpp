@@ -12,18 +12,15 @@ enum colorType {
     COLOR_USER,
 };
 
-enum meshBufType {
-    MESH_POS = 0,   // Index of Position buffer
-    MESH_IDX = 1,   // Index of Indices buffer
-    MESH_COL = 2,   // Index of Color buffer
-    MESH_USER = 16, // Special value : Starting index of user-defined buffers
-};
-
-enum ballsBufType {
-    BALL_CENTER = 0, // Index of Center position buffer 
-    BALL_RADIUS = 1, // Index of radius position buffer 
-    BALL_COL    = 2, // Index of color position buffer
-    BALL_USER   = 16, // Special value : Starting index of user-defined buffers 
+enum modelBufType {
+    MODEL_POS = 0,   // Index of position buffer
+    MODEL_IDX = 1,   // Index of indices buffer in case of EBO
+    MODEL_COL = 2,   // Index of color buffer
+    MODEL_SIZE = 3,  // Index of "size" buffer : any single float 
+                     // that is supposed to give the width/radius... 
+                     // of the primitive
+    MODEL_NORMAL = 4, // Index of normal buffer (storing normals to the vertex)
+    MODEL_USER_START = 16,  // Special value : Starting index of user-defined buffers
 };
 
 struct Model {

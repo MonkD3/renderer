@@ -34,14 +34,14 @@ Balls::Balls(int const _dim, std::vector<float>& _centerCoords, std::vector<floa
     positions->bind();
     positions->setData(centerCoords.size()*sizeof(centerCoords[0]), centerCoords.data());
     positions->setAttribute(0, dim, BUF_FLOAT, GL_FALSE, 0, 0);
-    bufIndices[BALL_CENTER] = vao.attachBuffer(positions);
+    bufIndices[MODEL_POS] = vao.attachBuffer(positions);
     vao.enableAttribute(0);
 
     VBO* rad = new VBO;
     rad->bind();
     rad->setData(sizeof(radius[0])*radius.size(), radius.data());
     rad->setAttribute(1, 1, BUF_FLOAT, GL_FALSE, 0, 0);
-    bufIndices[BALL_RADIUS] = vao.attachBuffer(rad);
+    bufIndices[MODEL_SIZE] = vao.attachBuffer(rad);
     vao.enableAttribute(1);
 }
 
@@ -71,7 +71,7 @@ Balls::Balls(int const _dim, std::vector<float>& _centerCoords, float const _rad
     positions->bind();
     positions->setData(centerCoords.size()*sizeof(centerCoords[0]), centerCoords.data());
     positions->setAttribute(0, dim, BUF_FLOAT, GL_FALSE, 0, 0);
-    bufIndices[BALL_CENTER] = vao.attachBuffer(positions);
+    bufIndices[MODEL_POS] = vao.attachBuffer(positions);
     vao.enableAttribute(0);
 
     prog->use();
@@ -81,13 +81,13 @@ Balls::Balls(int const _dim, std::vector<float>& _centerCoords, float const _rad
 void Balls::moveCenters(std::vector<float>& dx){
     for (size_t i = 0; i < dx.size(); i++) centerCoords[i] += dx[i];
 
-    setBuffer(BALL_CENTER, centerCoords.size()*sizeof(centerCoords[0]), centerCoords.data());
+    setBuffer(MODEL_POS, centerCoords.size()*sizeof(centerCoords[0]), centerCoords.data());
 }
 
 void Balls::setCenters(std::vector<float>& newCenters){
     centerCoords = newCenters;
 
-    setBuffer(BALL_CENTER, centerCoords.size()*sizeof(centerCoords[0]), centerCoords.data());
+    setBuffer(MODEL_POS, centerCoords.size()*sizeof(centerCoords[0]), centerCoords.data());
 }
 
 void Balls::setColors(uint8_t R, uint8_t G, uint8_t B) {
@@ -107,14 +107,14 @@ void Balls::setColors(uint8_t R, uint8_t G, uint8_t B) {
 void Balls::setColors(std::vector<uint8_t>& _colors){
     vao.bind();
     colors = _colors;
-    if (vao.buffers[bufIndices[BALL_COL]]){
-        setBuffer(BALL_COL, colors.size()*sizeof(colors[0]), colors.data());
+    if (vao.buffers[bufIndices[MODEL_COL]]){
+        setBuffer(MODEL_COL, colors.size()*sizeof(colors[0]), colors.data());
     } else {
         VBO* col = new VBO;
         col->bind();
         col->setData(colors.size()*sizeof(colors[0]), colors.data());
         col->setAttribute(2, 3, BUF_UBYTE, true, 0, 0);
-        bufIndices[BALL_COL] = vao.attachBuffer(col);
+        bufIndices[MODEL_COL] = vao.attachBuffer(col);
     }
 
     if (colType != COLOR_NODE) {

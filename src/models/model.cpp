@@ -21,8 +21,8 @@ Model::Model() {
 
     // Reserve 16 spots for the renderer. 
     // Indices greater or equal to 16 are considered user-managed
-    bufIndices.reserve(MESH_USER);
-    for (int i = 0; i < MESH_USER; i++) bufIndices[i] = 0;
+    bufIndices.reserve(MODEL_USER_START);
+    for (int i = 0; i < MODEL_USER_START; i++) bufIndices[i] = 0;
 }
 
 Model::~Model() {
@@ -31,7 +31,7 @@ Model::~Model() {
     delete fshd;
     delete prog;
 
-    for (int i = 0; i < MESH_USER; i++){
+    for (int i = 0; i < MODEL_USER_START; i++){
         unsigned int idx = bufIndices[i];
         if (idx) {
             DEBUG("Deleting model buffer %u at index %u", idx, i);

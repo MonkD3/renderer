@@ -69,7 +69,8 @@ int main(void){
         }
     }
 
-    TriMesh mesh(2, positions, indices, colors);
+    TriMesh mesh(2, positions, indices);
+    mesh.setColors(colors);
     window.addModel(&mesh);
 
     while (!glfwWindowShouldClose(window.win)){

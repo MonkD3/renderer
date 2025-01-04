@@ -19,14 +19,6 @@ struct TriMesh : public Model {
     // Rendering uses default shaders.
     TriMesh(int const dim, std::vector<float>& _nodeCoords, std::vector<int>& _triangles);
 
-    // Triangular meshes with nodes coordinates @_nodeCoords and elements @_elem. 
-    // Rendering uses uniform color shaders
-    TriMesh(int const dim, std::vector<float>& _nodeCoords, std::vector<int>& _triangles, uint8_t R, uint8_t G, uint8_t B);
-
-    // Triangular meshes with nodes coordinates @_nodeCoords and elements @_elem. 
-    // Rendering uses per node color shaders
-    TriMesh(int const dim, std::vector<float>& _nodeCoords, std::vector<int>& _triangles, std::vector<uint8_t>& _colors);
-
     ~TriMesh() = default;
 
     // Computes nodeCoords[i] += dx[i]
@@ -35,7 +27,10 @@ struct TriMesh : public Model {
     // Set nodeCoords[i] = newCoords[i]
     void setNodes(std::vector<float>& newNodes);
 
-    void setColors(uint8_t R, uint8_t G, uint8_t B);
+    // Set single color for all nodes
+    void setColor(uint8_t R, uint8_t G, uint8_t B);
+    // Set a color for each node, triangle color
+    // is interpolated between its nodes
     void setColors(std::vector<uint8_t>& _colors);
 
     void draw() const;
