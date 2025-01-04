@@ -1,39 +1,27 @@
 link_libraries(renderer)
 
 add_executable(
-    hello_triangle
-    ./hello_triangle/src.cpp
+    001
+    ./001-simple-triangle/src.cpp
 )
 
 add_executable(
-    hello_mesh
-    ./hello_mesh/src.cpp
+    002
+    ./002-mesh-triangle/src.cpp
 )
 
 add_executable(
-    function_visualisation
-    ./function_visualisation/src.cpp
-)
-add_executable(
-    colormap
-    ./colormaps/src.cpp
-)
-add_executable(
-    advect
-    ./advection/src.cpp
+    003
+    ./003-mesh3D-triangle/src.cpp
 )
 
 add_executable(
-    rotate
-    ./rotate_3D_test/src.cpp 
+    004
+    ./004-ball3D-simple/src.cpp
 )
 
 add_executable(
-    tet
-    ./hello_tet/src.cpp
+    005
+    ./005-ball3D-moving/src.cpp
 )
 
-add_executable(
-    balls
-    ./moving_balls/src.cpp
-)
