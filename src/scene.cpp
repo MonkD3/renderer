@@ -11,6 +11,8 @@ Scene::Scene() {
 
     models = std::vector<Model*>();
     modelIsRendered = std::vector<bool>();
+    zoom = 1.0f;
+    aspectRatio = 1.0f;
 }
 
 Scene::~Scene() { }
@@ -41,6 +43,16 @@ void Scene::draw() const {
             int imvpLoc = glGetUniformLocation(prog->id, "imvp");
             if (imvpLoc >= 0) {
                 glUniformMatrix4fv(imvpLoc, 1, false, &(imvp[0][0]));
+            }
+
+            int arLoc = glGetUniformLocation(prog->id, "aspectRatio");
+            if (arLoc >= 0) {
+                glUniform1f(arLoc, aspectRatio);
+            }
+
+            int zLoc = glGetUniformLocation(prog->id, "zoom");
+            if (zLoc >= 0) {
+                glUniform1f(zLoc, zoom);
             }
 
             // Draw the model

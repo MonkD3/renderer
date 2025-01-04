@@ -3,7 +3,6 @@
 #include <glm/ext/vector_double2.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/matrix.hpp>
-#include <sys/cdefs.h>
 
 #include "window.hpp"
 #include "glad/gl.h"
@@ -44,6 +43,7 @@ void defaultGLFWScrollCallback(GLFWwindow* window, double xoffset, double yoffse
         newZoom = fmax(0.001f, newZoom * windata->zoom);
         const float scaling = newZoom / windata->zoom;
         windata->zoom = newZoom;
+        scene->zoom = newZoom;
 
         // Perform in sequence :
         // 1) a translation towards the mouse
@@ -121,7 +121,7 @@ void defaultGLFWCursorPositionCallback(GLFWwindow* window, double x, double y){
             // Compute normal to movement
             double x_normal = - (y_n - prev_y_n);
             double y_normal = x_n - prev_x_n;
-            double d = 100.f*hypot(x_n - prev_x_n, y_n - prev_y_n);
+            float d = 100.f*hypot(x_n - prev_x_n, y_n - prev_y_n);
 
             // Fun things of linear algebra :
             // Suppose R is a rotation matrix around axis a.
@@ -131,7 +131,7 @@ void defaultGLFWCursorPositionCallback(GLFWwindow* window, double x, double y){
             // Therefore, to rotate the space around a we need to apply the 
             // rotation matrix around axis b = T^{-1}a, then : Tb = TT^{-1}a = a
             glm::vec4 rotAxis = scene->imvp * glm::vec4(x_normal, y_normal, 0.0f, 0.0f);
-            scene->mvp = glm::rotate(scene->mvp, glm::radians((float)d), glm::vec3(rotAxis[0], rotAxis[1], rotAxis[2]));  
+            scene->mvp = glm::rotate(scene->mvp, glm::radians(d), glm::vec3(rotAxis[0], rotAxis[1], rotAxis[2]));  
 
             scene->imvp = glm::inverse(scene->mvp);
         }
@@ -171,6 +171,7 @@ void defaultGLFWFrameBufferSizeCallback(GLFWwindow* window, int width, int heigh
         scene->imvp = glm::inverse(scene->mvp);
 
         windata->aspectRatio = newAspectRatio;
+        scene->aspectRatio = newAspectRatio;
         windata->frame_h = height;
         windata->frame_w = width;
     }
@@ -220,6 +221,7 @@ Window::Window(int _width, int _height, char const* _name, Monitor* _monitor, Wi
     glfwGetFramebufferSize(win, &frame_w, &frame_h);
     float const aspectRatio = (float)frame_w / frame_h;
 
+    scene->aspectRatio = aspectRatio;
     scene->mvp = glm::scale(scene->mvp, glm::vec3(1.0f, aspectRatio, 1.0f)); // Apply the aspect-ratio
     scene->imvp = glm::inverse(scene->mvp); // Get the inverse of the transform
 
@@ -232,6 +234,8 @@ Window::Window(int _width, int _height, char const* _name, Monitor* _monitor, Wi
     windata->frame_w = frame_w;
     windata->zoom = 1.0f;
     windata->win = this;
+    windata->m1_pressed = false;
+    windata->m2_pressed = false;
 
     // ======================== Attach default callbacks ======================
     // Set the custom callback to null

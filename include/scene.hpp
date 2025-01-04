@@ -13,6 +13,9 @@ struct Scene {
 
     std::vector<Model*> models; // Models in the scene
     std::vector<bool> modelIsRendered; // modelIsRendered[i] = true if models[i] is rendered
+
+    float aspectRatio;
+    float zoom;
     
     // Default constructor
     Scene();
