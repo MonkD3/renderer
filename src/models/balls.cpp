@@ -107,7 +107,7 @@ void Balls::setColors(uint8_t R, uint8_t G, uint8_t B) {
 void Balls::setColors(std::vector<uint8_t>& _colors){
     vao.bind();
     colors = _colors;
-    if (vao.buffers[bufIndices[MODEL_COL]]){
+    if (bufIndices[MODEL_COL] >= 0){
         setBuffer(MODEL_COL, colors.size()*sizeof(colors[0]), colors.data());
     } else {
         VBO* col = new VBO;

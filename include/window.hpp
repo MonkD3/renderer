@@ -16,15 +16,16 @@ typedef struct Window Window;
 
 // Default data attached to a window
 struct WindowData {
-    glm::dvec2 mouse_screen_xy;  // Position of mouse in screen coordinates
-    glm::dvec2 mouse_world_xy; // Position of mouse in world coordinates
+    Window* win; // The window owning the data
+    void* user_data; // Attached user data
+    
+    // Window size related attributes
     int frame_h; // Height of the framebuffer
     int frame_w; // Width of the framebuffer
     float aspectRatio; // Aspect ratio of the screen
-    void* user_data; // Attached user data
-    Window* win; // The window owning the data
 
-    float zoom;
+    // User interaction related attributes
+    glm::dvec2 mouse_xy;  // Position of mouse in screen coordinates
     bool m1_pressed;
     bool m2_pressed;
 };
@@ -88,6 +89,7 @@ struct Window {
         }
     };
     void inline setDefaultCallbackOn(callbackType ct) {
+        DEBUG("Setting default callback %d ON", ct);
         switch (ct) {
             case CALLBACK_CURSOR_POS:
                 useDefaultCursorPositionCallback = true;

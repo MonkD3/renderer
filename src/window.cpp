@@ -40,9 +40,8 @@ void defaultGLFWScrollCallback(GLFWwindow* window, double xoffset, double yoffse
         if (yoffset > 0.f) newZoom = zoomStrength; // zooming in
         else newZoom = 1.f / zoomStrength;       // zomming out
 
-        newZoom = fmax(0.001f, newZoom * windata->zoom);
-        const float scaling = newZoom / windata->zoom;
-        windata->zoom = newZoom;
+        newZoom = fmax(0.001f, newZoom * scene->zoom);
+        const float scaling = newZoom / scene->zoom;
         scene->zoom = newZoom;
 
         // Perform in sequence :
@@ -99,8 +98,8 @@ void defaultGLFWCursorPositionCallback(GLFWwindow* window, double x, double y){
     int const h = windata->frame_h;
 
     if (win->useDefaultCursorPositionCallback){
-        windata->mouse_screen_xy[0] = x;
-        windata->mouse_screen_xy[1] = y;
+        windata->mouse_xy[0] = x;
+        windata->mouse_xy[1] = y;
 
         // Normalized coordinates
         double x_n = (2.f*x - w)/w;
@@ -224,6 +223,7 @@ Window::Window(int _width, int _height, char const* _name, Monitor* _monitor, Wi
     scene->aspectRatio = aspectRatio;
     scene->mvp = glm::scale(scene->mvp, glm::vec3(1.0f, aspectRatio, 1.0f)); // Apply the aspect-ratio
     scene->imvp = glm::inverse(scene->mvp); // Get the inverse of the transform
+    scene->zoom = 1.0f;
 
     // ========================= Initialize window data =======================
     windata = new WindowData;
@@ -232,7 +232,6 @@ Window::Window(int _width, int _height, char const* _name, Monitor* _monitor, Wi
     windata->aspectRatio = aspectRatio;
     windata->frame_h = frame_h;
     windata->frame_w = frame_w;
-    windata->zoom = 1.0f;
     windata->win = this;
     windata->m1_pressed = false;
     windata->m2_pressed = false;
