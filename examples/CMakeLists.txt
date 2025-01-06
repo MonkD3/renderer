@@ -25,3 +25,7 @@ add_executable(
     ./005-ball3D-moving/src.cpp
 )
 
+add_executable(
+    test
+    ./test-ball-rendering/src.cpp
+)
