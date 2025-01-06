@@ -29,3 +29,8 @@ add_executable(
     test
     ./test-ball-rendering/src.cpp
 )
+
+add_executable(
+    teapot
+    ./utah-teapot//src.cpp
+)
