@@ -30,7 +30,7 @@ struct Model {
     // Gives the index of an attached buffer in the VAO
     // Allows to differentiate between renderer and user-managed 
     // buffers
-    std::vector<unsigned int> bufIndices;
+    std::vector<int> bufIndices;
 
     Shader* vshd; // Vertex shader
     Shader* fshd; // Fragment shader

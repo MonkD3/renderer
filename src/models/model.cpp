@@ -22,7 +22,7 @@ Model::Model() {
     // Reserve 16 spots for the renderer. 
     // Indices greater or equal to 16 are considered user-managed
     bufIndices.reserve(MODEL_USER_START);
-    for (int i = 0; i < MODEL_USER_START; i++) bufIndices[i] = 0;
+    for (int i = 0; i < MODEL_USER_START; i++) bufIndices[i] = -1;
 }
 
 Model::~Model() {
@@ -32,8 +32,8 @@ Model::~Model() {
     delete prog;
 
     for (int i = 0; i < MODEL_USER_START; i++){
-        unsigned int idx = bufIndices[i];
-        if (idx) {
+        int idx = bufIndices[i];
+        if (idx >= 0) {
             DEBUG("Deleting model buffer %u at index %u", idx, i);
             delete vao.buffers[idx];
         }
@@ -49,7 +49,7 @@ void Model::setBuffer(unsigned int const bufIndex, size_t const bufSize, void co
 
 unsigned int Model::addBuffer(Buffer* buf){
     vao.bind();
-    unsigned int idx = vao.attachBuffer(buf);
+    int idx = vao.attachBuffer(buf);
     bufIndices.push_back(idx);
     DEBUG("Adding model buffer %u at index %lu", idx, bufIndices.size()-1);
     return bufIndices.size() - 1;

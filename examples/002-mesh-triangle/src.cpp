@@ -36,7 +36,7 @@ int main(void){
     std::vector<uint8_t> colors ({
         255, 0, 0,
         0, 255, 0,
-        0, 0, 255,
+        0, 0, 255
     });
     TriMesh tri1(2, positions, indices);
     tri1.setColors(colors);
@@ -58,7 +58,7 @@ int main(void){
         0, 255, 255
     });
     TriMesh tri2(2, positions2, indices2);
-    tri1.setColors(colors2);
+    tri2.setColors(colors2);
     window.addModel(&tri2);
 
     while (!glfwWindowShouldClose(window.win)){

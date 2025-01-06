@@ -1,3 +1,4 @@
+#include "glad/gl.h"
 #include "models/model.hpp"
 #include "models/trimesh.hpp"
 #include "log.h"
@@ -54,14 +55,14 @@ void TriMesh::setColor(uint8_t R, uint8_t G, uint8_t B) {
 void TriMesh::setColors(std::vector<uint8_t>& _colors){
     vao.bind();
     colors = _colors;
-    if (vao.buffers[bufIndices[MODEL_COL]]){
+    if (bufIndices[MODEL_COL] >= 0){
         setBuffer(MODEL_COL, colors.size()*sizeof(colors[0]), colors.data());
     } else {
         VBO* col = new VBO;
         col->bind();
         col->setData(colors.size()*sizeof(colors[0]), colors.data());
         col->setAttribute(1, 3, BUF_UBYTE, true, 0, 0);
-        bufIndices[MODEL_COL] = addBuffer(col);
+        bufIndices[MODEL_COL] = vao.attachBuffer(col);
     }
 
     if (colType != COLOR_NODE) {
