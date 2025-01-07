@@ -1,8 +1,10 @@
 #pragma once
 
 #include <glad/gl.h>
+#include <string>
 #include <vector>
 #include <ctime>
+#include <unordered_map>
 
 enum ShaderType {
     NO_SHADER = 0,
@@ -26,14 +28,27 @@ struct Shader {
 
 
 struct ShaderProgram {
-    unsigned int id;
-    bool is_compiled;
-    std::vector<Shader*> shd;
+    unsigned int id;  // OpenGL id for the Shader program
+    bool is_compiled; // Is the program compiled ?
+    std::vector<Shader*> shd; // List of shader attached to this program
+
+    // HashMap linking the uniforms name to their location in the program
+    std::unordered_map<std::string, int> uniformsLocations;
 
     ShaderProgram();
     ~ShaderProgram();
 
+    // Attach a given shader to the program
     void attachShader(Shader* s);
+
+    // Compile the program
     void compile();
+
+    // Use the program for the subsequent rendering calls
     void use() const;
+
+    int getUniformLocation(const std::string& uname);
+
+    void setUniformMat4f(const std::string& uname, float const* const mat, bool transpose);
+    void setUniform1f(const std::string& uname, float v0);
 };

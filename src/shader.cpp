@@ -1,6 +1,8 @@
+#include "glad/gl.h"
 #include <shader.hpp>
 #include <log.h>
 #include <cstdio>
+#include <string>
 
 Shader::Shader() : fname(NULL), id(0), st(NO_SHADER){};
 
@@ -107,4 +109,27 @@ void ShaderProgram::compile(){
 
 void ShaderProgram::use() const {
     glUseProgram(id);
+}
+
+int ShaderProgram::getUniformLocation(const std::string& uname) {
+    auto keyval = uniformsLocations.find(uname);
+    if (keyval != uniformsLocations.end()) {
+        return keyval->second;
+    }
+
+    int loc = glGetUniformLocation(id, uname.c_str());
+    DEBUG("Inserting uniform '%s' with location %d into the hashtable of program %u", uname.c_str(), loc, id);
+    uniformsLocations[uname] = loc;
+    return loc;
+}
+
+void ShaderProgram::setUniformMat4f(const std::string& uname, float const* const mat, bool transpose) {
+    int loc = getUniformLocation(uname);
+    if (loc >= 0) glUniformMatrix4fv(loc, 1, transpose, mat);
+    
+}
+
+void ShaderProgram::setUniform1f(const std::string& uname, float v0){
+    int loc = getUniformLocation(uname);
+    if (loc >= 0) glUniform1f(loc, v0);
 }

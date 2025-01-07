@@ -94,11 +94,6 @@ int main(void){
     glVertexAttribDivisor(3, 1);
 
     prog.use();
-
-    int mvpLoc = glGetUniformLocation(prog.id, "mvp");
-    int imvpLoc = glGetUniformLocation(prog.id, "imvp");
-    int arLoc = glGetUniformLocation(prog.id, "aspectRatio");
-    int zLoc = glGetUniformLocation(prog.id, "zoom");
     while (!glfwWindowShouldClose(window.win)){
         glfwPollEvents();
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -106,10 +101,10 @@ int main(void){
 
         window.scene->mvp = glm::rotate(window.scene->mvp, glm::radians(0.2f), glm::vec3(1.0f, 1.0f, 1.0f));
 
-        if (mvpLoc >= 0) glUniformMatrix4fv(mvpLoc, 1, false, &(window.scene->mvp[0][0]));
-        if (imvpLoc >= 0) glUniformMatrix4fv(imvpLoc, 1, false, &(window.scene->imvp[0][0]));
-        if (arLoc >= 0) glUniform1f(arLoc, window.scene->aspectRatio);
-        if (zLoc >= 0) glUniform1f(zLoc, window.scene->zoom);
+        prog.setUniformMat4f("mvp", &(window.scene->mvp[0][0]), false);
+        prog.setUniformMat4f("imvp", &(window.scene->imvp[0][0]), false);
+        prog.setUniform1f("aspectRatio", window.scene->aspectRatio);
+        prog.setUniform1f("zoom", window.scene->zoom);
 
         glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, n*n); 
         glfwSwapBuffers(window.win);

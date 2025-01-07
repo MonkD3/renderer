@@ -32,28 +32,15 @@ void Scene::draw() const {
             model = models[m];
 
             // Load the scene transform in the shader program of the model
-            ShaderProgram const* prog = model->prog;
+            ShaderProgram * prog = model->prog;
             prog->use();
             model->vao.bind();
-            int mvpLoc = glGetUniformLocation(prog->id, "mvp");
-            if (mvpLoc >= 0) {
-                glUniformMatrix4fv(mvpLoc, 1, false, &(mvp[0][0]));
-            }
 
-            int imvpLoc = glGetUniformLocation(prog->id, "imvp");
-            if (imvpLoc >= 0) {
-                glUniformMatrix4fv(imvpLoc, 1, false, &(imvp[0][0]));
-            }
-
-            int arLoc = glGetUniformLocation(prog->id, "aspectRatio");
-            if (arLoc >= 0) {
-                glUniform1f(arLoc, aspectRatio);
-            }
-
-            int zLoc = glGetUniformLocation(prog->id, "zoom");
-            if (zLoc >= 0) {
-                glUniform1f(zLoc, zoom);
-            }
+            // Set default uniforms
+            prog->setUniformMat4f("mvp", &(mvp[0][0]), false);
+            prog->setUniformMat4f("imvp", &(imvp[0][0]), false);
+            prog->setUniform1f("aspectRatio", aspectRatio);
+            prog->setUniform1f("zoom", zoom);
 
             // Draw the model
             model->draw();
