@@ -6,8 +6,9 @@
 #include "array.hpp"
 #include <cstdio>
 #include <cstdlib>
-#include <iterator>
+#include <glm/ext/matrix_transform.hpp>
 #include <vector>
+
 
 int main(void){
 
@@ -102,6 +103,8 @@ int main(void){
         glfwPollEvents();
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        window.scene->mvp = glm::rotate(window.scene->mvp, glm::radians(0.2f), glm::vec3(1.0f, 1.0f, 1.0f));
 
         if (mvpLoc >= 0) glUniformMatrix4fv(mvpLoc, 1, false, &(window.scene->mvp[0][0]));
         if (imvpLoc >= 0) glUniformMatrix4fv(imvpLoc, 1, false, &(window.scene->imvp[0][0]));

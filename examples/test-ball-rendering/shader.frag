@@ -6,7 +6,7 @@ uniform float aspectRatio;
 uniform float zoom;
 
 in vec4 fPos;
-in float fRad;
+flat in float fRad;
 in vec3 fLight;
 
 void main() {
@@ -16,11 +16,9 @@ void main() {
         discard;
     }
     d.z = sqrt(z); 
-    // Instead of dividig d by the radius, we divide the 
-    // inner product d^T light, this saves us a bit of compute
-    // power
+    d /= fRad;
     vec3 light = normalize(fLight);
-    float brightness = - dot(d, light) / fRad;
+    float brightness = clamp(-dot(d, light), 0.0f, 1.0f);
 
     FragColor = brightness * vec4(1.0f, 1.0f, 1.0f, 1.0f);
 } 
