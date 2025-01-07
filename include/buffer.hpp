@@ -27,18 +27,22 @@ struct BufferAttribute {
 };
     
 struct Buffer {
-    unsigned int id;
-    unsigned int buftype;
-    size_t size;
-    std::vector<BufferAttribute> buflayout;
+    unsigned int id; // OpenGL buffer ID
+    unsigned int buftype; // OpenGL buffer type (GL_ARRAY_BUFFER, ...)
+    size_t size; // Size of the data in the buffer (in bytes)
+    std::vector<BufferAttribute> buflayout; // Layout of each attribute in the buffer
 
     Buffer();
     ~Buffer();
 
-    void bind() const;
+    void bind() const; // Bind the buffer
+    
+    // Change the data inside the buffer
     void setData(size_t const bufsize, void const* buf);
 
+    // Specify the layout of the attribute's data inside the buffer
     void setAttribute(unsigned int loc, int nmemb, BufType bt, bool normalized, size_t stride, void* offset);
+    // Specify the layout of the attribute's data inside the buffer
     void setAttribute(BufferAttribute& ba);
 };
 

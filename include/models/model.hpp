@@ -23,6 +23,9 @@ enum modelBufType {
     MODEL_USER_START = 16,  // Special value : Starting index of user-defined buffers
 };
 
+/**
+ *  Defines a generic model that should be extended to provide "renderable" objects
+ */
 struct Model {
     // Vertex Array Object describing the layout of the underlying buffers
     VAO vao;    
