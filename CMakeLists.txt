@@ -26,7 +26,7 @@ find_package(
     REQUIRED
 )
 
-add_subdirectory(./glad/)
+add_subdirectory(./deps/glad/)
 
 # Initialize an empty string for the source files
 add_library(renderer SHARED)
