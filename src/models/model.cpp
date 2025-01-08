@@ -1,4 +1,3 @@
-#include "renderer.hpp"
 #include "models/model.hpp"
 #include "buffer.hpp"
 #include "glad/gl.h"

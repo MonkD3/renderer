@@ -1,18 +1,12 @@
 #include "scene.hpp"
-#include "glad/gl.h"
 #include "models/model.hpp"
 #include "shader.hpp"
 #include "log.h"
 
 
 Scene::Scene() {
-    mvp = glm::mat4(1.0f);
-    imvp = glm::mat4(1.0f);
-
     models = std::vector<Model*>();
     modelIsRendered = std::vector<bool>();
-    zoom = 1.0f;
-    aspectRatio = 1.0f;
 }
 
 Scene::~Scene() { }
@@ -37,10 +31,10 @@ void Scene::draw() const {
             model->vao.bind();
 
             // Set default uniforms
-            prog->setUniformMat4f("mvp", &(mvp[0][0]), false);
-            prog->setUniformMat4f("imvp", &(imvp[0][0]), false);
-            prog->setUniform1f("aspectRatio", aspectRatio);
-            prog->setUniform1f("zoom", zoom);
+            prog->setUniformMat4f("mvp", &(worldBlock.view[0][0]), false);
+            prog->setUniformMat4f("imvp", &(worldBlock.iview[0][0]), false);
+            prog->setUniform1f("aspectRatio", worldBlock.scalings[0]);
+            prog->setUniform1f("zoom", worldBlock.scalings[1]);
 
             // Draw the model
             model->draw();

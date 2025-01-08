@@ -3,6 +3,7 @@
 #include "array.hpp"
 #include "buffer.hpp"
 #include "shader.hpp"
+#include "uniforms.hpp"
 #include <vector>
 
 enum colorType {
@@ -38,7 +39,7 @@ struct Model {
     Shader* vshd; // Vertex shader
     Shader* fshd; // Fragment shader
     ShaderProgram* prog; // Shader program to use for rendering the model. Default is constant white.
-    
+
     Model();
     ~Model();
 

@@ -6,16 +6,13 @@
 #include <vector>
 
 #include "models/model.hpp"
+#include "uniforms.hpp"
 
 struct Scene {
-    glm::mat4 mvp;    // Global Model-Viewport-Projection matrix
-    glm::mat4 imvp;   // Inverse of Global Model-Viewport-Projection matrix
-
+    WorldUniformBlock worldBlock;
+    unsigned int ubo;
     std::vector<Model*> models; // Models in the scene
     std::vector<bool> modelIsRendered; // modelIsRendered[i] = true if models[i] is rendered
-
-    float aspectRatio;
-    float zoom;
     
     // Default constructor
     Scene();

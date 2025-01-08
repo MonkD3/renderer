@@ -1,6 +1,7 @@
 #include "buffer.hpp"
 #include "glad/gl.h"
 #include "shader.hpp"
+#include "uniforms.hpp"
 #include "window.hpp"
 #include "buffer.hpp"
 #include "array.hpp"
@@ -74,17 +75,18 @@ int main(void){
     vao.enableAttribute(1);
 
     prog.use();
+    WorldUniformBlock& world = window.scene->worldBlock;
     while (!glfwWindowShouldClose(window.win)){
         glfwPollEvents();
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-        window.scene->mvp = glm::rotate(window.scene->mvp, glm::radians(0.2f), glm::vec3(1.0f, 1.0f, 1.0f));
-        window.scene->imvp = glm::inverse(window.scene->mvp);
+        world.view = glm::rotate(world.view, glm::radians(0.2f), glm::vec3(1.0f, 1.0f, 1.0f));
+        world.iview = glm::inverse(world.view);
 
-        glUniformMatrix4fv(glGetUniformLocation(prog.id, "mvp"), 1, false, &(window.scene->mvp[0][0]));
-        glUniformMatrix4fv(glGetUniformLocation(prog.id, "imvp"), 1, false, &(window.scene->imvp[0][0]));
+        glUniformMatrix4fv(glGetUniformLocation(prog.id, "mvp"), 1, false, &(world.view[0][0]));
+        glUniformMatrix4fv(glGetUniformLocation(prog.id, "imvp"), 1, false, &(world.iview[0][0]));
 
         glDrawArrays(GL_TRIANGLES, 0, ntris*3);
         glfwSwapBuffers(window.win);

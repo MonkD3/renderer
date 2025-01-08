@@ -1,6 +1,7 @@
 #include "buffer.hpp"
 #include "glad/gl.h"
 #include "shader.hpp"
+#include "uniforms.hpp"
 #include "window.hpp"
 #include "buffer.hpp"
 #include "array.hpp"
@@ -94,17 +95,19 @@ int main(void){
     glVertexAttribDivisor(3, 1);
 
     prog.use();
+
+    WorldUniformBlock& world = window.scene->worldBlock;
     while (!glfwWindowShouldClose(window.win)){
         glfwPollEvents();
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        window.scene->mvp = glm::rotate(window.scene->mvp, glm::radians(0.2f), glm::vec3(1.0f, 1.0f, 1.0f));
+        world.view = glm::rotate(world.view, glm::radians(0.2f), glm::vec3(1.0f, 1.0f, 1.0f));
 
-        prog.setUniformMat4f("mvp", &(window.scene->mvp[0][0]), false);
-        prog.setUniformMat4f("imvp", &(window.scene->imvp[0][0]), false);
-        prog.setUniform1f("aspectRatio", window.scene->aspectRatio);
-        prog.setUniform1f("zoom", window.scene->zoom);
+        prog.setUniformMat4f("mvp", &(world.view[0][0]), false);
+        prog.setUniformMat4f("imvp", &(world.iview[0][0]), false);
+        prog.setUniform1f("aspectRatio", world.scalings[0]);
+        prog.setUniform1f("zoom", world.scalings[1]);
 
         glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, n*n); 
         glfwSwapBuffers(window.win);

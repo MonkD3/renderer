@@ -8,6 +8,7 @@
 #include "glad/gl.h"
 #include "log.h"
 #include "scene.hpp"
+#include "uniforms.hpp"
 
 void defaultGLFWKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods){
     WindowData* windata = (WindowData*) glfwGetWindowUserPointer(window);
@@ -24,6 +25,7 @@ void defaultGLFWScrollCallback(GLFWwindow* window, double xoffset, double yoffse
     WindowData* windata = (WindowData*) glfwGetWindowUserPointer(window);
     Window* win = windata->win;
     Scene* scene = win->scene;
+    WorldUniformBlock& world = scene->worldBlock;
 
     if (win->useDefaultMouseScrollCallback){
         int const w = windata->frame_w;
@@ -40,9 +42,9 @@ void defaultGLFWScrollCallback(GLFWwindow* window, double xoffset, double yoffse
         if (yoffset > 0.f) newZoom = zoomStrength; // zooming in
         else newZoom = 1.f / zoomStrength;       // zomming out
 
-        newZoom = fmax(0.001f, newZoom * scene->zoom);
-        const float scaling = newZoom / scene->zoom;
-        scene->zoom = newZoom;
+        newZoom = fmax(0.001f, newZoom * world.scalings[1]);
+        const float scaling = newZoom / world.scalings[1];
+        world.scalings[1] = newZoom;
 
         // Perform in sequence :
         // 1) a translation towards the mouse
@@ -56,14 +58,14 @@ void defaultGLFWScrollCallback(GLFWwindow* window, double xoffset, double yoffse
         // DOES NOT scale the translation
         for (int i = 0; i < 3; i++){
             for (int j = 0; j < 3; j++){
-                scene->mvp[i][j] *= scaling;
+                world.view[i][j] *= scaling;
             }
         }
 
-        scene->mvp[3][0] = (scene->mvp[3][0] - xpos) * scaling + xpos;
-        scene->mvp[3][1] = (scene->mvp[3][1] - ypos) * scaling + ypos;
+        world.view[3][0] = (world.view[3][0] - xpos) * scaling + xpos;
+        world.view[3][1] = (world.view[3][1] - ypos) * scaling + ypos;
 
-        scene->imvp = glm::inverse(scene->mvp);
+        world.iview = glm::inverse(world.view);
     }
 
     // Call the user-defined callback
@@ -93,6 +95,7 @@ void defaultGLFWCursorPositionCallback(GLFWwindow* window, double x, double y){
     WindowData* windata = (WindowData*) glfwGetWindowUserPointer(window);
     Window* win = windata->win;
     Scene* scene = win->scene;
+    WorldUniformBlock& world = scene->worldBlock;
 
     int const w = windata->frame_w;
     int const h = windata->frame_h;
@@ -111,9 +114,9 @@ void defaultGLFWCursorPositionCallback(GLFWwindow* window, double x, double y){
 
         // Translate if m1 is held down
         if (windata->m1_pressed) {
-            scene->mvp[3][0] -= prev_x_n - x_n;
-            scene->mvp[3][1] -= prev_y_n - y_n;
-            scene->imvp = glm::inverse(scene->mvp);
+            world.view[3][0] -= prev_x_n - x_n;
+            world.view[3][1] -= prev_y_n - y_n;
+            world.iview = glm::inverse(world.view);
         }
         // Rotate if m2 is held down
         else if (windata->m2_pressed) {
@@ -129,10 +132,10 @@ void defaultGLFWCursorPositionCallback(GLFWwindow* window, double x, double y){
             // space around axis Ta ! 
             // Therefore, to rotate the space around a we need to apply the 
             // rotation matrix around axis b = T^{-1}a, then : Tb = TT^{-1}a = a
-            glm::vec4 rotAxis = scene->imvp * glm::vec4(x_normal, y_normal, 0.0f, 0.0f);
-            scene->mvp = glm::rotate(scene->mvp, glm::radians(d), glm::vec3(rotAxis[0], rotAxis[1], rotAxis[2]));  
+            glm::vec4 rotAxis = world.iview * glm::vec4(x_normal, y_normal, 0.0f, 0.0f);
+            world.view = glm::rotate(world.view, glm::radians(d), glm::vec3(rotAxis[0], rotAxis[1], rotAxis[2]));  
 
-            scene->imvp = glm::inverse(scene->mvp);
+            world.iview = glm::inverse(world.view);
         }
 
         // Update
@@ -148,6 +151,7 @@ void defaultGLFWFrameBufferSizeCallback(GLFWwindow* window, int width, int heigh
     WindowData* windata = (WindowData*) glfwGetWindowUserPointer(window);
     Window* win = windata->win;
     Scene* scene = win->scene;
+    WorldUniformBlock& world = scene->worldBlock;
 
     if (win->useDefaultFrameBufferSizeCallback){
         glViewport(0, 0, width, height); 
@@ -163,14 +167,14 @@ void defaultGLFWFrameBufferSizeCallback(GLFWwindow* window, int width, int heigh
         // i.e. The ratio of lengths in x is : newHeight / currentHeight 
         //      so we scale the x axis by the inverse ratio : newHeight / currentHeight 
         for (int i = 0; i < 3; i++) {
-            scene->mvp[i][0] *= wRatio;
-            scene->mvp[i][1] *= hRatio;
+            world.view[i][0] *= wRatio;
+            world.view[i][1] *= hRatio;
         }
 
-        scene->imvp = glm::inverse(scene->mvp);
+        world.iview = glm::inverse(world.view);
 
         windata->aspectRatio = newAspectRatio;
-        scene->aspectRatio = newAspectRatio;
+        world.scalings[0] = newAspectRatio;
         windata->frame_h = height;
         windata->frame_w = width;
     }
@@ -220,10 +224,11 @@ Window::Window(int _width, int _height, char const* _name, Monitor* _monitor, Wi
     glfwGetFramebufferSize(win, &frame_w, &frame_h);
     float const aspectRatio = (float)frame_w / frame_h;
 
-    scene->aspectRatio = aspectRatio;
-    scene->mvp = glm::scale(scene->mvp, glm::vec3(1.0f, aspectRatio, 1.0f)); // Apply the aspect-ratio
-    scene->imvp = glm::inverse(scene->mvp); // Get the inverse of the transform
-    scene->zoom = 1.0f;
+    WorldUniformBlock& world = scene->worldBlock;
+    world.scalings[0] = aspectRatio;
+    world.view = glm::scale(world.view, glm::vec3(1.0f, aspectRatio, 1.0f)); // Apply the aspect-ratio
+    world.iview = glm::inverse(world.view); // Get the inverse of the transform
+    world.scalings[2] = 1.0f;
 
     // ========================= Initialize window data =======================
     windata = new WindowData;

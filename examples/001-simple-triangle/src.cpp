@@ -57,7 +57,7 @@ int main(void){
         // computed)
         // 2) disable the default callbacks (the transform is not 
         // computed anymore)
-        prog.setUniformMat4f("mvp", &(window.scene->mvp[0][0]), false);
+        prog.setUniformMat4f("mvp", &(window.scene->worldBlock.view[0][0]), false);
 
         glDrawArrays(GL_TRIANGLES, 0, 3);
         glfwSwapBuffers(window.win);
