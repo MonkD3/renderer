@@ -21,9 +21,8 @@ TriMesh::TriMesh(int const _dim, std::vector<float>& _nodeCoords, std::vector<in
     bufIndices[MODEL_IDX] = vao.attachBuffer(indices);
     vao.enableAttribute(0);
 
-    // Set default white color
+    // Default color is set in Model constructor
     colType = COLOR_DEFAULT;
-    glVertexAttrib3f(1, 255.f, 255.f, 255.f);
 }
 
 void TriMesh::moveNodes(std::vector<float>& dx){
@@ -40,11 +39,11 @@ void TriMesh::setNodes(std::vector<float>& newNodes){
 
 void TriMesh::setColor(uint8_t R, uint8_t G, uint8_t B) {
     colors = std::vector<uint8_t>({R, G, B});
+    vao.bind();
 
     if (colType != COLOR_CONSTANT) {
         DEBUG("Changing node-coloring type of trimesh to COLOR_CONSTANT");
         colType = COLOR_CONSTANT;
-        vao.bind();
         vao.disableAttribute(1);
     }
 
@@ -53,8 +52,8 @@ void TriMesh::setColor(uint8_t R, uint8_t G, uint8_t B) {
 }
 
 void TriMesh::setColors(std::vector<uint8_t>& _colors){
-    vao.bind();
     colors = _colors;
+    vao.bind();
     if (bufIndices[MODEL_COL] >= 0){
         setBuffer(MODEL_COL, colors.size()*sizeof(colors[0]), colors.data());
     } else {

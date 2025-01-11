@@ -7,16 +7,19 @@
 
 Model::Model() {
     DEBUG("Initializing new model");
-    vshd = new Shader(CMAKE_HOME_DIRECTORY "/assets/vertex/pos_col.vert", SHADER_VERTEX);
-    fshd = new Shader(CMAKE_HOME_DIRECTORY "/assets/fragment/const_col.frag", SHADER_FRAGMENT);
-
-    // Attribute 1 is the color : set a generic white color
-    glVertexAttrib3f(1, 1.0f, 1.0f, 1.0f);
+    vshd = new Shader(CMAKE_HOME_DIRECTORY "/assets/vertex/defaultVertex.vert", SHADER_VERTEX);
+    fshd = new Shader(CMAKE_HOME_DIRECTORY "/assets/fragment/defaultFrag.frag", SHADER_FRAGMENT);
 
     prog = new ShaderProgram();
     prog->attachShader(vshd);
     prog->attachShader(fshd);
     prog->compile();
+
+    // Attribute 1 is the color : set a generic white color
+    glVertexAttrib3f(1, 1.0f, 1.0f, 1.0f);
+
+    // Attribute 2 is the normals, set a generic normal z normal
+    glVertexAttrib4f(2, 0.0f, 0.0f, 1.0f, 1.0f);
 
     // Reserve 16 spots for the renderer. 
     // Indices greater or equal to 16 are considered user-managed

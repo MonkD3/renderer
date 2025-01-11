@@ -14,8 +14,8 @@ int main(void){
     // automatically
     Window window(800, 600, "Hello renderer", NULL, NULL);
 
-    Shader vshd("../assets/vertex/pos_col.vert", SHADER_VERTEX);
-    Shader fshd("../assets/fragment/white.frag", SHADER_FRAGMENT);
+    Shader vshd("../examples/001-simple-triangle/shader.vert", SHADER_VERTEX);
+    Shader fshd("../examples/001-simple-triangle/shader.frag", SHADER_FRAGMENT);
     ShaderProgram prog;
     prog.attachShader(&vshd);
     prog.attachShader(&fshd);

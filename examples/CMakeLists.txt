@@ -32,5 +32,15 @@ add_executable(
 
 add_executable(
     teapot
-    ./utah-teapot//src.cpp
+    ./utah-teapot/src.cpp
+)
+
+add_executable(
+    blend
+    ./test-blend/src.cpp
+)
+
+add_executable(
+    uniform
+    ./test-uniform-blocks/src.cpp
 )

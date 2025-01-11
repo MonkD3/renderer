@@ -122,6 +122,26 @@ int ShaderProgram::getUniformLocation(const std::string& uname) {
     uniformsLocations[uname] = loc;
     return loc;
 }
+unsigned int ShaderProgram::getUniformBlockIndex(const std::string& uname){
+    auto keyval = uniformsBlockIndices.find(uname);
+    if (keyval != uniformsBlockIndices.end()) {
+        return keyval->second;
+    }
+
+    unsigned int index = glGetUniformBlockIndex(id, uname.c_str());
+    DEBUG("Inserting uniform block '%s' with index %d into the hashtable of program %u", uname.c_str(), index, id);
+    uniformsBlockIndices[uname] = index;
+    return index;
+
+}
+void ShaderProgram::setUniformBlockBinding(const std::string& uname, unsigned int binding){
+    unsigned int index = getUniformBlockIndex(uname);
+    if (index != GL_INVALID_INDEX) {
+        DEBUG("Set uniform block binding of program %u : index = %u, binding = %u", id, index, binding);
+        glUniformBlockBinding(id, index, binding);
+    }
+
+}
 
 void ShaderProgram::setUniformMat4f(const std::string& uname, float const* const mat, bool transpose) {
     int loc = getUniformLocation(uname);
@@ -132,4 +152,13 @@ void ShaderProgram::setUniformMat4f(const std::string& uname, float const* const
 void ShaderProgram::setUniform1f(const std::string& uname, float v0){
     int loc = getUniformLocation(uname);
     if (loc >= 0) glUniform1f(loc, v0);
+}
+
+void ShaderProgram::setUniform2f(const std::string& uname, float v0, float v1){
+    int loc = getUniformLocation(uname);
+    if (loc >= 0) glUniform2f(loc, v0, v1);
+}
+void ShaderProgram::setUniform1b(const std::string& uname, bool v0){
+    int loc = getUniformLocation(uname);
+    if (loc >= 0) glUniform1i(loc, v0);
 }

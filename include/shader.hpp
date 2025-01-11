@@ -34,6 +34,7 @@ struct ShaderProgram {
 
     // HashMap linking the uniforms name to their location in the program
     std::unordered_map<std::string, int> uniformsLocations;
+    std::unordered_map<std::string, unsigned int> uniformsBlockIndices;
 
     ShaderProgram();
     ~ShaderProgram();
@@ -48,7 +49,12 @@ struct ShaderProgram {
     void use() const;
 
     int getUniformLocation(const std::string& uname);
+    unsigned int getUniformBlockIndex(const std::string& uname);
+    void setUniformBlockBinding(const std::string& uname, unsigned int binding);
+    
 
     void setUniformMat4f(const std::string& uname, float const* const mat, bool transpose);
     void setUniform1f(const std::string& uname, float v0);
+    void setUniform2f(const std::string& uname, float v0, float v1);
+    void setUniform1b(const std::string& uname, bool v0);
 };

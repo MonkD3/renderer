@@ -39,6 +39,7 @@ struct Buffer {
     
     // Change the data inside the buffer
     void setData(size_t const bufsize, void const* buf);
+    void setSubData(size_t start, size_t const bufsize, void const* buf) const;
 
     // Specify the layout of the attribute's data inside the buffer
     void setAttribute(unsigned int loc, int nmemb, BufType bt, bool normalized, size_t stride, void* offset);
@@ -52,4 +53,11 @@ struct VBO : public Buffer {
 
 struct EBO : public Buffer { 
     EBO();
+};
+
+struct UBO : public Buffer {
+    UBO();
+
+    // Wrapper around glBindBufferRange
+    void bindUniformRange(int index, int offset, size_t size) const;
 };

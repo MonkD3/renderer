@@ -7,10 +7,11 @@
 
 #include "models/model.hpp"
 #include "uniforms.hpp"
+#include "buffer.hpp"
 
 struct Scene {
-    WorldUniformBlock worldBlock;
-    unsigned int ubo;
+    WorldUniformBlock worldBlock; // The state of the world, shared by all models in the scene
+    UBO ubo; // The uniform buffer allowing easy modification of uniform blocks across all shader programs
     std::vector<Model*> models; // Models in the scene
     std::vector<bool> modelIsRendered; // modelIsRendered[i] = true if models[i] is rendered
     
