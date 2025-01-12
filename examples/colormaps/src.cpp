@@ -55,14 +55,14 @@ int main(void){
     VBO vbo;
     vbo.bind();
     vbo.setData(sizeof(pos), pos);
-    vbo.setAttribute(0, 2, BUF_FLOAT, false, 2 * sizeof(float), (void*)0);
+    vao.setAttribute(0, 2, BUF_FLOAT, false, 2 * sizeof(float), (void*)0);
     vao.attachBuffer(&vbo);
     vao.enableAttribute(0);
 
     VBO vbo_val;
     vbo_val.bind();
     vbo_val.setData(sizeof(val), val);
-    vbo_val.setAttribute(1, 1, BUF_FLOAT, false, sizeof(float), (void*)0);
+    vao.setAttribute(1, 1, BUF_FLOAT, false, sizeof(float), (void*)0);
     vao.attachBuffer(&vbo_val);
     vao.enableAttribute(1);
 

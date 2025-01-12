@@ -81,14 +81,14 @@ int main(void){
     VBO vbo;
     vbo.bind();
     vbo.setData(sizeof(pos), pos);
-    vbo.setAttribute(0, 3, BUF_FLOAT, false, 3 * sizeof(float), (void*)0);
+    vao.setAttribute(0, 3, BUF_FLOAT, false, 3 * sizeof(float), (void*)0);
     vao.attachBuffer(&vbo);
     vao.enableAttribute(0);
 
     VBO vcol;
     vcol.bind();
     vcol.setData(sizeof(col), col);
-    vcol.setAttribute(1, 3, BUF_UBYTE, true, 3 * sizeof(unsigned char), (void*)0);
+    vao.setAttribute(1, 3, BUF_UBYTE, true, 3 * sizeof(unsigned char), (void*)0);
     vao.attachBuffer(&vcol);
     vao.enableAttribute(1);
 

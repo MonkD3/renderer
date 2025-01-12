@@ -119,14 +119,14 @@ int main(void){
     VBO vbo;
     vbo.bind();
     vbo.setData(sizeof(pos), pos);
-    vbo.setAttribute(0, 2, BUF_FLOAT, false, 2 * sizeof(float), (void*)0);
+    vao.setAttribute(0, 2, BUF_FLOAT, false, 2 * sizeof(float), (void*)0);
     vao.attachBuffer(&vbo);
     vao.enableAttribute(0);
 
     VBO vcol;
     vcol.bind();
     vcol.setData(sizeof(nodecol), nodecol);
-    vcol.setAttribute(1, 3, BUF_UBYTE, true, 3*sizeof(unsigned char), 0);
+    vao.setAttribute(1, 3, BUF_UBYTE, true, 3*sizeof(unsigned char), 0);
     vao.attachBuffer(&vcol);
     vao.enableAttribute(1);
 
@@ -142,8 +142,7 @@ int main(void){
         if (useNodeColor){
             vcol.bind();
             vcol.setData(sizeof(nodecol), nodecol);
-            // vcol.setAttribute(1, 3, BUF_UBYTE, true, 3*sizeof(unsigned char), 0);
-            glVertexAttribPointer(1, 3, BUF_UBYTE, true, 3*sizeof(unsigned char), 0);
+            vao.setAttribute(1, 3, BUF_UBYTE, true, 3*sizeof(unsigned char), 0);
             vao.enableAttribute(1);
         }
         if (useConstantColor){
@@ -153,8 +152,7 @@ int main(void){
         if (useCmap){
             vcol.bind();
             vcol.setData(sizeof(field), field);
-            // vcol.setAttribute(1, 1, BUF_FLOAT, false, sizeof(float), 0);
-            glVertexAttribPointer(1, 1, BUF_FLOAT, false, sizeof(float), 0);
+            vao.setAttribute(1, 1, BUF_FLOAT, false, sizeof(float), 0);
             vao.enableAttribute(1);
             prog.setUniform2f("cmapRange", fieldRange[0], fieldRange[1]);
         }

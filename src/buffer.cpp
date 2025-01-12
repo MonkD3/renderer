@@ -29,45 +29,6 @@ void Buffer::setSubData(size_t start, size_t bufsize, void const* buf) const {
     glBufferSubData(buftype, (GLsizeiptr) start, (GLsizeiptr) bufsize, buf);
 }
 
-
-void Buffer::setAttribute(BufferAttribute& ba){
-    // Overwrite location if already used
-    for (BufferAttribute& _ba : buflayout){
-        if (_ba.loc == ba.loc){
-            ba = _ba;
-            return;
-        }
-    }
-    buflayout.push_back(ba);
-}
-
-void Buffer::setAttribute(unsigned int loc, int nmemb, BufType bt, bool normalized, size_t stride, void* offset){
-
-    // Overwrite location if already used
-    for (BufferAttribute& ba : buflayout){
-        if (ba.loc == loc){
-            DEBUG("Overwrite attribute %u of buffer %u [type = %u]", loc, id, buftype);
-            ba.nmemb = nmemb;
-            ba.bt = bt;
-            ba.normalized = normalized;
-            ba.stride = stride;
-            ba.offset = offset;
-            return;
-        }
-    }
-
-    DEBUG("Add attribute %u to buffer %u [type = %u]", loc, id, buftype);
-    BufferAttribute ba{
-        .loc = loc,
-        .nmemb = nmemb,
-        .bt = bt,
-        .normalized = normalized,
-        .stride = stride,
-        .offset = offset
-    };
-    buflayout.push_back(ba);
-}
-
 VBO::VBO() {
     buftype = GL_ARRAY_BUFFER;
 };

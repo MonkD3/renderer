@@ -17,7 +17,7 @@ TriMesh::TriMesh(int const _dim, std::vector<float>& _nodeCoords, std::vector<in
     EBO* indices = new EBO;
     indices->bind();
     indices->setData(sizeof(elem[0])*elem.size(), elem.data());
-    indices->setAttribute(0, dim, BUF_FLOAT, GL_FALSE, 0, 0);
+    vao.setAttribute(0, dim, BUF_FLOAT, GL_FALSE, 0, 0);
     bufIndices[MODEL_IDX] = vao.attachBuffer(indices);
     vao.enableAttribute(0);
 
@@ -60,7 +60,7 @@ void TriMesh::setColors(std::vector<uint8_t>& _colors){
         VBO* col = new VBO;
         col->bind();
         col->setData(colors.size()*sizeof(colors[0]), colors.data());
-        col->setAttribute(1, 3, BUF_UBYTE, true, 0, 0);
+        vao.setAttribute(1, 3, BUF_UBYTE, true, 0, 0);
         bufIndices[MODEL_COL] = vao.attachBuffer(col);
     }
 
