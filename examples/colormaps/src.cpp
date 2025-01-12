@@ -1,4 +1,5 @@
 #include "buffer.hpp"
+#include "colormaps.hpp"
 #include "glad/gl.h"
 #include "shader.hpp"
 #include "window.hpp"
@@ -12,22 +13,14 @@ int main(void){
     Window window(800, 600, "Hello renderer", NULL, NULL);
 
     // Colormap colors
-    uint8_t bwr[9] = {
+    std::vector<unsigned char> bwr({
         0,   0,   255, // Blue
         255, 255, 255, // White
         255, 0,   0,   // Red
-    };
+    });
 
-    glEnable(GL_TEXTURE_1D);
-
-    GLuint tex;
-    glGenTextures(1, &tex); // get texture id
-    glBindTexture(GL_TEXTURE_1D, tex);
-    glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexImage1D(GL_TEXTURE_1D, 0, GL_RGB8, 3, 0, GL_RGB, GL_UNSIGNED_BYTE, bwr);
-    glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); 
-    glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); 
-
+    ColorMap cmap(3, bwr);
+    cmap.bind();
 
     Shader vshd("../examples/colormaps/texture.vert", SHADER_VERTEX);
     Shader fshd("../examples/colormaps/texture.frag", SHADER_FRAGMENT);

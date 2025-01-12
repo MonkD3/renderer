@@ -12,6 +12,7 @@ target_sources(
               ${CMAKE_CURRENT_SOURCE_DIR}/shader.hpp
               ${CMAKE_CURRENT_SOURCE_DIR}/window.hpp
               ${CMAKE_CURRENT_SOURCE_DIR}/scene.hpp
+              ${CMAKE_CURRENT_SOURCE_DIR}/colormaps.hpp
 )
 
 add_subdirectory(./models)
