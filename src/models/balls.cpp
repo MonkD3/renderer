@@ -26,7 +26,7 @@ Balls::Balls(int const _dim, std::vector<float>& _centerCoords, std::vector<floa
     prog->use();
 
     // Attribute 2 is the color : set a generic white color
-    glVertexAttrib3f(2, 1.0f, 1.0f, 1.0f);
+    vao.setDefaultAttributeValues3f(2, 1.0f, 1.0f, 1.0f);
 
     vao.bind();
 
@@ -63,7 +63,7 @@ Balls::Balls(int const _dim, std::vector<float>& _centerCoords, float const _rad
     prog->use();
 
     // Attribute 2 is the color : set a generic white color
-    glVertexAttrib3f(2, 1.0f, 1.0f, 1.0f);
+    vao.setDefaultAttributeValues3f(2, 1.0f, 1.0f, 1.0f);
 
     vao.bind();
 
@@ -101,7 +101,7 @@ void Balls::setColors(uint8_t R, uint8_t G, uint8_t B) {
     }
 
     prog->use();
-    glVertexAttrib3f(2, R/255.f, G/255.f, B/255.f);
+    vao.setDefaultAttributeValues3f(2, R/255.f, G/255.f, B/255.f);
 }
 
 void Balls::setColors(std::vector<uint8_t>& _colors){

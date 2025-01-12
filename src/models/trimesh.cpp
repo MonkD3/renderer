@@ -48,7 +48,7 @@ void TriMesh::setColor(uint8_t R, uint8_t G, uint8_t B) {
     }
 
     prog->use();
-    glVertexAttrib3f(1, R/255.f, G/255.f, B/255.f);
+    vao.setDefaultAttributeValues3f(1, R/255.f, G/255.f, B/255.f);
 }
 
 void TriMesh::setColors(std::vector<uint8_t>& _colors){

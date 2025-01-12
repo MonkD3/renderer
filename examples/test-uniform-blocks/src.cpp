@@ -131,7 +131,7 @@ int main(void){
     vao.enableAttribute(1);
 
     // Normals
-    glVertexAttrib4f(2, 0.0f, 0.0f, 1.0f, 0.0f);
+    vao.setDefaultAttributeValues4f(2, 0.0f, 0.0f, 1.0f, 0.0f);
 
     prog.use();
     while (!glfwWindowShouldClose(window.win)){
@@ -146,7 +146,7 @@ int main(void){
             vao.enableAttribute(1);
         }
         if (useConstantColor){
-            glVertexAttrib3f(1, ccol[0], ccol[1], ccol[2]);
+            vao.setDefaultAttributeValues3f(1, ccol[0], ccol[1], ccol[2]);
             vao.disableAttribute(1);
         }
         if (useCmap){

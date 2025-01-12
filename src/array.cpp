@@ -45,3 +45,13 @@ void VAO::disableAttribute(unsigned int loc) const {
     DEBUG("Disable attribute %u of vertex array %u", loc, id);
     glDisableVertexAttribArray(loc);
 }
+
+void VAO::setDefaultAttributeValues3f(unsigned int loc, float v0, float v1, float v2) const {
+    bind();
+    glVertexAttrib3f(loc, v0, v1, v2);
+}
+
+void VAO::setDefaultAttributeValues4f(unsigned int loc, float v0, float v1, float v2, float v3) const {
+    bind();
+    glVertexAttrib4f(loc, v0, v1, v2, v3);
+}
