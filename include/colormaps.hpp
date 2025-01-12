@@ -8,6 +8,7 @@ struct ColorMap {
     float cmin; // Minimum value for the color map
     float cmax; // Maximum value for the color map
     
+    ColorMap() = default;
     ColorMap(int _nColors, std::vector<unsigned char>& _colors);
 
     ~ColorMap();

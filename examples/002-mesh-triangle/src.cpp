@@ -39,7 +39,7 @@ int main(void){
         0, 0, 255
     });
     TriMesh tri1(2, positions, indices);
-    tri1.setColors(colors);
+    tri1.setColor(colors);
     window.addModel(&tri1);
 
     // Second mesh (with only 1 triangle)
@@ -58,7 +58,7 @@ int main(void){
         0, 255, 255
     });
     TriMesh tri2(2, positions2, indices2);
-    tri2.setColors(colors2);
+    tri2.setColor(colors2);
     window.addModel(&tri2);
 
     while (!glfwWindowShouldClose(window.win)){

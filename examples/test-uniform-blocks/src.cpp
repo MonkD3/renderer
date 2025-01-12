@@ -2,6 +2,7 @@
 #include "colormaps.hpp"
 #include "glad/gl.h"
 #include "shader.hpp"
+#include "trimesh.hpp"
 #include "uniforms.hpp"
 #include "window.hpp"
 #include "buffer.hpp"
@@ -10,6 +11,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <sys/cdefs.h>
+#include <vector>
 
 bool useNodeColor = true;
 bool useConstantColor = false;
@@ -53,19 +55,6 @@ int main(void){
     window.keyCallback = myKeyCallback;
     WorldUniformBlock& world = window.scene->worldBlock;
 
-    Shader vshd("../examples/test-uniform-blocks/defaultVertex.vert", SHADER_VERTEX);
-    Shader fshd("../examples/test-uniform-blocks/defaultFrag.frag", SHADER_FRAGMENT);
-    ShaderProgram prog;
-    prog.attachShader(&vshd);
-    prog.attachShader(&fshd);
-    prog.compile();
-
-    prog.setUniformBlockBinding("worldBlock", 0);
-    UBO ubo;
-    ubo.bind();
-    ubo.bindUniformRange(0, 0, sizeof(WorldUniformBlock));
-    ubo.setData(sizeof(WorldUniformBlock), &world);
-
     // Colormap 
     std::vector<unsigned char> bwr({
         0,   0,   255, // Blue
@@ -75,27 +64,33 @@ int main(void){
     ColorMap cmap(3, bwr);
     cmap.bind();
 
-    float pos[8] = {
+    std::vector<float>pos({
          0.5f, -0.5f,  // bottom right
         -0.5f, -0.5f,  // bottom left
          0.5f,  0.5f,  // top right
         -0.5f,  0.5f,  // top left
-    };
+    });
+    std::vector<int> indices({
+        0, 1, 2,
+        2, 1, 3,
+    });
+    TriMesh mesh(2, pos, indices);
+    window.addModel(&mesh);
 
-    unsigned char nodecol[12] = {
+    std::vector<unsigned char> nodecol({
         255, 0, 0,
         0, 255, 0, 
         0, 0, 255,
         255, 255, 255
-    };
+    });
 
-    float ccol[3] = {
-        1.0f, 1.0f, 1.0f
-    };
+    std::vector<unsigned char> ccol({
+        255, 255, 255
+    });
 
-    float field[4] = {
+    std::vector<float> field({
         0.0f, 1.f, 0.f, 1.f 
-    };
+    });
 
     float fieldRange[2] = {
         FLT_MAX,
@@ -105,58 +100,32 @@ int main(void){
         fieldRange[0] = fminf(fieldRange[0], field[i]);
         fieldRange[1] = fmaxf(fieldRange[1], field[i]);
     }
-
-
-    VAO vao;
-    vao.bind();
-
-    VBO vbo;
-    vbo.bind();
-    vbo.setData(sizeof(pos), pos);
-    vao.setAttribute(0, 2, BUF_FLOAT, false, 2 * sizeof(float), (void*)0);
-    vao.attachBuffer(&vbo);
-    vao.enableAttribute(0);
-
-    VBO vcol;
-    vcol.bind();
-    vcol.setData(sizeof(nodecol), nodecol);
-    vao.setAttribute(1, 3, BUF_UBYTE, true, 3*sizeof(unsigned char), 0);
-    vao.attachBuffer(&vcol);
-    vao.enableAttribute(1);
+    cmap.cmin = fieldRange[0];
+    cmap.cmax = fieldRange[1];
 
     // Normals
-    vao.setDefaultAttributeValues4f(2, 0.0f, 0.0f, 1.0f, 0.0f);
+    mesh.vao.setDefaultAttributeValues4f(2, 0.0f, 0.0f, 1.0f, 0.0f);
 
-    prog.use();
+    /*prog.use();*/
     while (!glfwWindowShouldClose(window.win)){
         glfwPollEvents();
 
-        prog.setUniform1b("useCmap", useCmap);
-        
         if (useNodeColor){
-            vcol.bind();
-            vcol.setData(sizeof(nodecol), nodecol);
-            vao.setAttribute(1, 3, BUF_UBYTE, true, 3*sizeof(unsigned char), 0);
-            vao.enableAttribute(1);
+            mesh.setColor(nodecol);
         }
         if (useConstantColor){
-            vao.setDefaultAttributeValues3f(1, ccol[0], ccol[1], ccol[2]);
-            vao.disableAttribute(1);
+            mesh.setColor(ccol[0], ccol[1], ccol[2]);
         }
         if (useCmap){
-            vcol.bind();
-            vcol.setData(sizeof(field), field);
-            vao.setAttribute(1, 1, BUF_FLOAT, false, sizeof(float), 0);
-            vao.enableAttribute(1);
-            prog.setUniform2f("cmapRange", fieldRange[0], fieldRange[1]);
+            mesh.useCmap(cmap);
+            mesh.setField(field);
         }
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        ubo.setSubData(0, sizeof(WorldUniformBlock), &world);
+        window.draw();
 
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
         glfwSwapBuffers(window.win);
     }
 

@@ -10,6 +10,7 @@ enum colorType {
     COLOR_DEFAULT,
     COLOR_NODE,
     COLOR_CONSTANT,
+    COLOR_CMAP,
     COLOR_USER,
 };
 
