@@ -39,7 +39,7 @@ int main(void){
     VBO vbo;
     vbo.bind();
     vbo.setData(sizeof(pos), pos);
-    vao.setAttribute(0, 2, BUF_FLOAT, false, 2 * sizeof(float), (void*)0);
+    vao.setAttribute(0, 2, GL_FLOAT, false, 2 * sizeof(float), (void*)0);
     vao.attachBuffer(&vbo);
     vao.enableAttribute(0);
 

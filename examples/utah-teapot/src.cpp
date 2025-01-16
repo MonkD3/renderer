@@ -63,14 +63,14 @@ int main(void){
     VBO vbo;
     vbo.bind();
     vbo.setData(sizeof(pos[0])*pos.size(), pos.data());
-    vao.setAttribute(0, 3, BUF_FLOAT, false, 3 * sizeof(float), (void*)0);
+    vao.setAttribute(0, 3, GL_FLOAT, false, 3 * sizeof(float), (void*)0);
     vao.attachBuffer(&vbo);
     vao.enableAttribute(0);
     
     VBO vbo_normals;
     vbo_normals.bind();
     vbo_normals.setData(sizeof(normals[0])*normals.size(), normals.data());
-    vao.setAttribute(1, 3, BUF_FLOAT, false, 3 * sizeof(float), (void*)0);
+    vao.setAttribute(1, 3, GL_FLOAT, false, 3 * sizeof(float), (void*)0);
     vao.attachBuffer(&vbo_normals);
     vao.enableAttribute(1);
 

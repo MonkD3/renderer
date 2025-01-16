@@ -39,7 +39,7 @@ int main(void){
     VBO vbo;
     vbo.bind();
     vbo.setData(sizeof(instanceVertexPos), instanceVertexPos);
-    vao.setAttribute(0, 3, BUF_FLOAT, false, 3 * sizeof(float), (void*)0);
+    vao.setAttribute(0, 3, GL_FLOAT, false, 3 * sizeof(float), (void*)0);
     vao.attachBuffer(&vbo);
     vao.enableAttribute(0);
 
@@ -72,7 +72,7 @@ int main(void){
     VBO pos;
     pos.bind();
     pos.setData(sizeof(positions[0])*positions.size(), positions.data());
-    vao.setAttribute(1, 3, BUF_FLOAT, false, 3*sizeof(float), 0);
+    vao.setAttribute(1, 3, GL_FLOAT, false, 3*sizeof(float), 0);
     vao.attachBuffer(&pos);
     vao.enableAttribute(1);
     glVertexAttribDivisor(1, 1);
@@ -80,7 +80,7 @@ int main(void){
     VBO vbo_rad;
     vbo_rad.bind();
     vbo_rad.setData(sizeof(rad[0])*rad.size(), rad.data());
-    vao.setAttribute(2, 1, BUF_FLOAT, false, sizeof(float), (void*)0);
+    vao.setAttribute(2, 1, GL_FLOAT, false, sizeof(float), (void*)0);
     vao.attachBuffer(&vbo_rad);
     vao.enableAttribute(2);
     glVertexAttribDivisor(2, 1);
@@ -89,7 +89,7 @@ int main(void){
     VBO light;
     light.bind();
     light.setData(sizeof(light_direction[0])*light_direction.size(), light_direction.data());
-    vao.setAttribute(3, 3, BUF_FLOAT, false, 3*sizeof(float), 0);
+    vao.setAttribute(3, 3, GL_FLOAT, false, 3*sizeof(float), 0);
     vao.attachBuffer(&light);
     vao.enableAttribute(3);
     glVertexAttribDivisor(3, 1);

@@ -19,7 +19,7 @@ Model::Model() {
     vao.setDefaultAttributeValues3f(1, 1.0f, 1.0f, 1.0f);
 
     // Attribute 2 is the normals, set a generic normal z normal
-    vao.setDefaultAttributeValues4f(2, 0.0f, 0.0f, 1.0f, 1.0f);
+    vao.setDefaultAttributeValues4f(2, 0.0f, 0.0f, 1.0f, 0.0f);
 
     // Reserve 16 spots for the renderer. 
     // Indices greater or equal to 16 are considered user-managed

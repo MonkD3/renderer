@@ -4,18 +4,7 @@
 #include <cstddef>
 #include <vector>
 
-enum BufType {
-    BUF_INT   = GL_INT,
-    BUF_UINT  = GL_UNSIGNED_INT,
-    BUF_BYTE  = GL_BYTE,
-    BUF_UBYTE = GL_UNSIGNED_BYTE,
-    BUF_SHORT = GL_SHORT,
-    BUF_USHORT = GL_UNSIGNED_SHORT,
-    BUF_FLOAT = GL_FLOAT,
-    BUF_MAT2  = GL_FLOAT_MAT2,
-    BUF_MAT3  = GL_FLOAT_MAT3,
-    BUF_MAT4  = GL_FLOAT_MAT4,
-};
+typedef GLenum BufType;
 
 struct BufferAttribute {
     unsigned int loc; // Location of the attribute in the shader

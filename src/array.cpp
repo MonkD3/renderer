@@ -1,4 +1,5 @@
 #include "buffer.hpp"
+#include "glad/gl.h"
 #include "log.h"
 #include <array.hpp>
 

@@ -58,14 +58,14 @@ int main(void){
     VBO vbo;
     vbo.bind();
     vbo.setData(sizeof(pos), pos);
-    vao.setAttribute(0, 3, BUF_FLOAT, false, 3 * sizeof(float), (void*)0);
+    vao.setAttribute(0, 3, GL_FLOAT, false, 3 * sizeof(float), (void*)0);
     vao.attachBuffer(&vbo);
     vao.enableAttribute(0);
 
     VBO col;
     col.bind();
     col.setData(colors.size()*sizeof(colors[0]), colors.data());
-    vao.setAttribute(1, 3, BUF_UBYTE, true, 3*sizeof(unsigned char), 0);
+    vao.setAttribute(1, 3, GL_FLOAT, true, 3*sizeof(unsigned char), 0);
     vao.attachBuffer(&col);
     vao.enableAttribute(1);
 

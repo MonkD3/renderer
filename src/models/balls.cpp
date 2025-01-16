@@ -33,14 +33,14 @@ Balls::Balls(int const _dim, std::vector<float>& _centerCoords, std::vector<floa
     VBO* positions = new VBO;
     positions->bind();
     positions->setData(centerCoords.size()*sizeof(centerCoords[0]), centerCoords.data());
-    vao.setAttribute(0, dim, BUF_FLOAT, GL_FALSE, 0, 0);
+    vao.setAttribute(0, dim, GL_FLOAT, GL_FALSE, 0, 0);
     bufIndices[MODEL_POS] = vao.attachBuffer(positions);
     vao.enableAttribute(0);
 
     VBO* rad = new VBO;
     rad->bind();
     rad->setData(sizeof(radius[0])*radius.size(), radius.data());
-    vao.setAttribute(1, 1, BUF_FLOAT, GL_FALSE, 0, 0);
+    vao.setAttribute(1, 1, GL_FLOAT, GL_FALSE, 0, 0);
     bufIndices[MODEL_SIZE] = vao.attachBuffer(rad);
     vao.enableAttribute(1);
 }
@@ -70,7 +70,7 @@ Balls::Balls(int const _dim, std::vector<float>& _centerCoords, float const _rad
     VBO* positions = new VBO;
     positions->bind();
     positions->setData(centerCoords.size()*sizeof(centerCoords[0]), centerCoords.data());
-    vao.setAttribute(0, dim, BUF_FLOAT, GL_FALSE, 0, 0);
+    vao.setAttribute(0, dim, GL_FLOAT, GL_FALSE, 0, 0);
     bufIndices[MODEL_POS] = vao.attachBuffer(positions);
     vao.enableAttribute(0);
 
@@ -113,7 +113,7 @@ void Balls::setColors(std::vector<uint8_t>& _colors){
         VBO* col = new VBO;
         col->bind();
         col->setData(colors.size()*sizeof(colors[0]), colors.data());
-        vao.setAttribute(2, 3, BUF_UBYTE, true, 0, 0);
+        vao.setAttribute(2, 3, GL_FLOAT, true, 0, 0);
         bufIndices[MODEL_COL] = vao.attachBuffer(col);
     }
 

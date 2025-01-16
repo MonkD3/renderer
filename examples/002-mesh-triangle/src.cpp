@@ -33,7 +33,7 @@ int main(void){
         0, 1, 2,
     });
 
-    std::vector<uint8_t> colors ({
+    std::vector<unsigned char> colors ({
         255, 0, 0,
         0, 255, 0,
         0, 0, 255
