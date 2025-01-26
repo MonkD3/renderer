@@ -8,5 +8,6 @@ target_sources(
     INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/model.hpp
               ${CMAKE_CURRENT_SOURCE_DIR}/trimesh.hpp
               ${CMAKE_CURRENT_SOURCE_DIR}/balls.hpp
+              ${CMAKE_CURRENT_SOURCE_DIR}/lines.hpp
 )
 
