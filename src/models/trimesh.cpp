@@ -25,6 +25,22 @@ TriMesh::TriMesh(int const _dim, std::vector<float>& nodeCoords, std::vector<int
     colType = COLOR_DEFAULT;
 }
 
+TriMesh::TriMesh(int const _dim, VBO* nodeCoords, EBO* triangles) : dim(_dim) {
+    vao.bind();
+
+    nodeCoords->bind();
+    bufIndices[MODEL_POS] = vao.attachBuffer(nodeCoords);
+
+    triangles->bind();
+    nElems = triangles->size / sizeof(int);
+    vao.setAttribute(0, dim, GL_FLOAT, GL_FALSE, 0, 0);
+    bufIndices[MODEL_IDX] = vao.attachBuffer(triangles);
+    vao.enableAttribute(0);
+
+    // Default color is set in Model constructor
+    colType = COLOR_DEFAULT;
+}
+
 void TriMesh::setNodes(std::vector<float>& newNodes){
     setBuffer(MODEL_POS, newNodes.size()*sizeof(newNodes[0]), newNodes.data());
 }

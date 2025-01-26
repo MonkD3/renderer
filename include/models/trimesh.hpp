@@ -1,5 +1,6 @@
 #pragma once 
 
+#include "buffer.hpp"
 #include "colormaps.hpp"
 #include "models/model.hpp"
 
@@ -17,6 +18,7 @@ struct TriMesh : public Model {
     // Triangular meshes with nodes coordinates @_nodeCoords and elements @_elem. 
     // Rendering uses default shaders.
     TriMesh(int const dim, std::vector<float>& _nodeCoords, std::vector<int>& _triangles);
+    TriMesh(int const dim, VBO* _nodeCoords, EBO* _triangles);
 
     ~TriMesh() = default;
 
