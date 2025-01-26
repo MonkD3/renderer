@@ -3,3 +3,7 @@ build/
 
 # Ignore cache
 .cache/
+
+# Ignore "playground" files. I.E. some tests or not yet
+# finished examples
+playground/
