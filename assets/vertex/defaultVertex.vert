@@ -1,7 +1,8 @@
 #version 460 core
 layout (location = 0) in vec4 iPos; 
 layout (location = 1) in vec3 iCol;
-layout (location = 2) in vec4 iNormal;
+
+layout (location = 3) in vec4 iNormal;
 
 layout (std140) uniform worldBlock {
     mat4 view;

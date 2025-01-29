@@ -57,8 +57,5 @@ int main(void){
         glfwSwapBuffers(window.win);
     }
 
-    /*delete positions;*/
-    /*delete radius;*/
-
     glfwTerminate();
 }

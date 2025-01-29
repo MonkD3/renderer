@@ -4,124 +4,141 @@
 #include "log.h"
 #include "shader.hpp"
 
-Balls::Balls(){
-
-}
-
-Balls::Balls(int const _dim, std::vector<float>& _centerCoords, std::vector<float>& _radius) : dim(_dim), centerCoords(_centerCoords), radius(_radius), radType(RADIUS_PER_BALL), colType(COLOR_DEFAULT) {
-    delete vshd;
+void Balls::initShaderProgram(){
     vshd = new Shader(CMAKE_HOME_DIRECTORY "/assets/vertex/defaultBalls.vert", SHADER_VERTEX);
-
-    gshd = new Shader(CMAKE_HOME_DIRECTORY "/assets/geometry/defaultBalls.geom", SHADER_GEOMETRY);
-
-    delete fshd;
     fshd = new Shader(CMAKE_HOME_DIRECTORY "/assets/fragment/defaultBalls.frag", SHADER_FRAGMENT);
 
-    delete prog;
-    prog = new ShaderProgram;
+    prog = new ShaderProgram();
     prog->attachShader(vshd);
-    prog->attachShader(gshd);
     prog->attachShader(fshd);
     prog->compile();
-    prog->use();
 
-    // Attribute 2 is the color : set a generic white color
-    vao.setDefaultAttributeValues3f(2, 1.0f, 1.0f, 1.0f);
+    vao.bind();
+    // Attribute 1 is the color : set a generic white color
+    vao.setDefaultAttributeValues3f(MODEL_COL, 1.0f, 1.0f, 1.0f);
 
+    // Attribute 2 is the normals, set a generic normal z normal
+    vao.setDefaultAttributeValues4f(MODEL_NORMAL, 0.0f, 0.0f, 1.0f, 0.0f);
+
+    float instanceVertexPos[12] = {
+          1.f, -1.f, 0.0f,  // Bot-right
+         -1.f, -1.f, 0.0f,  // Bot-left
+          1.f,  1.f, 0.0f,  // Top-right
+         -1.f,  1.f, 0.0f,  // Top-left
+    };
+    VBO *vbo = new VBO();
+    vbo->bind();
+    vbo->setData(sizeof(instanceVertexPos), instanceVertexPos);
+    vao.setAttribute(MODEL_TRANS, 3, GL_FLOAT, false, 3 * sizeof(float), (void*)0);
+    vao.attachBuffer(vbo);
+    vao.enableAttribute(MODEL_TRANS);
+}
+
+Balls::Balls(){ }
+
+Balls::Balls(int const _dim, std::vector<float>& centerCoords, std::vector<float>& radius) : dim(_dim), nElems(centerCoords.size()/dim), radType(RADIUS_PER_BALL), colType(COLOR_DEFAULT) {
     vao.bind();
 
     VBO* positions = new VBO;
     positions->bind();
     positions->setData(centerCoords.size()*sizeof(centerCoords[0]), centerCoords.data());
-    vao.setAttribute(0, dim, GL_FLOAT, GL_FALSE, 0, 0);
+    vao.setAttribute(MODEL_POS, dim, GL_FLOAT, GL_FALSE, 0, 0);
     bufIndices[MODEL_POS] = vao.attachBuffer(positions);
-    vao.enableAttribute(0);
+    vao.enableAttribute(MODEL_POS);
+    glVertexAttribDivisor(MODEL_POS, 1);
 
     VBO* rad = new VBO;
     rad->bind();
     rad->setData(sizeof(radius[0])*radius.size(), radius.data());
-    vao.setAttribute(1, 1, GL_FLOAT, GL_FALSE, 0, 0);
+    vao.setAttribute(MODEL_SIZE, 1, GL_FLOAT, GL_FALSE, 0, 0);
     bufIndices[MODEL_SIZE] = vao.attachBuffer(rad);
-    vao.enableAttribute(1);
+    vao.enableAttribute(MODEL_SIZE);
+    glVertexAttribDivisor(MODEL_SIZE, 1);
+
+    initShaderProgram();
 }
 
-Balls::Balls(int const _dim, std::vector<float>& _centerCoords, float const _radius) : dim(_dim), centerCoords(_centerCoords), radius(std::vector<float>({_radius})), radType(RADIUS_CONSTANT), colType(COLOR_DEFAULT) {
-    delete vshd;
-    vshd = new Shader(CMAKE_HOME_DIRECTORY "/assets/vertex/defaultBalls.vert", SHADER_VERTEX);
-
-    gshd = new Shader(CMAKE_HOME_DIRECTORY "/assets/geometry/defaultBalls.geom", SHADER_GEOMETRY);
-
-    delete fshd;
-    fshd = new Shader(CMAKE_HOME_DIRECTORY "/assets/fragment/defaultBalls.frag", SHADER_FRAGMENT);
-
-    delete prog;
-    prog = new ShaderProgram;
-    prog->attachShader(vshd);
-    prog->attachShader(gshd);
-    prog->attachShader(fshd);
-    prog->compile();
-    prog->use();
-
-    // Attribute 2 is the color : set a generic white color
-    vao.setDefaultAttributeValues3f(2, 1.0f, 1.0f, 1.0f);
+Balls::Balls(int const _dim, std::vector<float>& centerCoords, float const radius) : dim(_dim), nElems(centerCoords.size()/dim), radType(RADIUS_CONSTANT), colType(COLOR_DEFAULT) {
 
     vao.bind();
 
     VBO* positions = new VBO;
     positions->bind();
     positions->setData(centerCoords.size()*sizeof(centerCoords[0]), centerCoords.data());
-    vao.setAttribute(0, dim, GL_FLOAT, GL_FALSE, 0, 0);
+    vao.setAttribute(MODEL_POS, dim, GL_FLOAT, GL_FALSE, 0, 0);
     bufIndices[MODEL_POS] = vao.attachBuffer(positions);
-    vao.enableAttribute(0);
+    vao.enableAttribute(MODEL_POS);
+    glVertexAttribDivisor(MODEL_POS, 1);
 
-    prog->use();
-    glVertexAttrib1f(1, radius[0]);
+    glVertexAttrib1f(MODEL_SIZE, radius);
+    initShaderProgram();
 }
 
-void Balls::moveCenters(std::vector<float>& dx){
-    for (size_t i = 0; i < dx.size(); i++) centerCoords[i] += dx[i];
-
-    setBuffer(MODEL_POS, centerCoords.size()*sizeof(centerCoords[0]), centerCoords.data());
-}
 
 void Balls::setCenters(std::vector<float>& newCenters){
-    centerCoords = newCenters;
-
-    setBuffer(MODEL_POS, centerCoords.size()*sizeof(centerCoords[0]), centerCoords.data());
+    setBuffer(MODEL_POS, newCenters.size()*sizeof(newCenters[0]), newCenters.data());
 }
 
-void Balls::setColors(uint8_t R, uint8_t G, uint8_t B) {
-    colors = std::vector<uint8_t>({R, G, B});
+void Balls::setColor(uint8_t R, uint8_t G, uint8_t B) {
 
     if (colType != COLOR_CONSTANT) {
         DEBUG("Changing node-coloring type of balls to COLOR_CONSTANT");
         colType = COLOR_CONSTANT;
         vao.bind();
-        vao.disableAttribute(2);
+        vao.disableAttribute(MODEL_COL);
     }
 
-    prog->use();
-    vao.setDefaultAttributeValues3f(2, R/255.f, G/255.f, B/255.f);
+    vao.setDefaultAttributeValues3f(MODEL_COL, R/255.f, G/255.f, B/255.f);
 }
 
-void Balls::setColors(std::vector<uint8_t>& _colors){
+void Balls::setColor(std::vector<uint8_t>& colors){
     vao.bind();
-    colors = _colors;
-    if (bufIndices[MODEL_COL] >= 0){
-        setBuffer(MODEL_COL, colors.size()*sizeof(colors[0]), colors.data());
-    } else {
+    if (bufIndices[MODEL_COL] < 0){
         VBO* col = new VBO;
-        col->bind();
-        col->setData(colors.size()*sizeof(colors[0]), colors.data());
-        vao.setAttribute(2, 3, GL_FLOAT, true, 0, 0);
         bufIndices[MODEL_COL] = vao.attachBuffer(col);
     }
+
+    setBuffer(MODEL_COL, colors.size()*sizeof(colors[0]), colors.data());
 
     if (colType != COLOR_NODE) {
         DEBUG("Changing node-coloring type of balls to COLOR_NODE");
         colType = COLOR_NODE;
-        vao.enableAttribute(2);
+        vao.setAttribute(MODEL_COL, 3, GL_FLOAT, true, 0, 0);
+        if (colType == COLOR_CMAP){
+            prog->use();
+            prog->setUniform1b("useCmap", false);
+        }
+        vao.enableAttribute(MODEL_COL);
+        glVertexAttribDivisor(MODEL_COL, 1);
     }
+}
+
+void Balls::useCmap(ColorMap& _cmap) {
+    vao.bind();
+    cmap = _cmap;
+    if (colType != COLOR_CMAP) {
+        if (colType == COLOR_DEFAULT || colType == COLOR_CONSTANT){
+            vao.enableAttribute(MODEL_COL);
+        }
+        prog->use();
+        prog->setUniform1b("useCmap", true);
+        prog->setUniform2f("cmapRange", cmap.cmin, cmap.cmax);
+        colType = COLOR_CMAP;
+    }
+}
+
+void Balls::setField(std::vector<float>& fieldValue){
+    if (colType != COLOR_CMAP) return;
+
+    vao.bind();
+    if (bufIndices[MODEL_COL] < 0){
+        VBO* col = new VBO;
+        bufIndices[MODEL_COL] = vao.attachBuffer(col);
+    } 
+
+    setBuffer(MODEL_COL, fieldValue.size()*sizeof(fieldValue[0]), fieldValue.data());
+    vao.setAttribute(MODEL_COL, 1, GL_FLOAT, false, 0, 0);
+    glVertexAttribDivisor(MODEL_COL, 1);
 }
 
 void Balls::draw() const {
@@ -129,5 +146,5 @@ void Balls::draw() const {
     vao.bind();
     prog->use();
 
-    glDrawArrays(GL_POINTS, 0, centerCoords.size() / dim);
+    glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, nElems);
 }

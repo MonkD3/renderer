@@ -1,5 +1,6 @@
 #pragma once 
 
+#include "colormaps.hpp"
 #include "models/model.hpp"
 
 enum radiusType {
@@ -9,20 +10,13 @@ enum radiusType {
 
 struct Balls : public Model {
     int dim;
-    std::vector<float> centerCoords;  // Coordinates of centers
-    std::vector<float> radius;   
-    std::vector<uint8_t> colors;
+    int nElems;
 
-    Shader* gshd;
+    radiusType radType;
 
-    radiusType radType;    // Type of radius : 
-                           //   - RADIUS_CONSTANT : each ball has the same radius 
-                           //   - RADIUS_PER_BALL : each ball has a different radius
-
-    colorType colType;     // Type of node-coloring : 
-                           //   - COLOR_CONSTANT : each node has the same color (only supply R, G, B)
-                           //   - COLOR_NODE : each node has a separate color (supply color for each node)
-                                  
+    ColorMap cmap;
+    colorType colType; 
+                           
     Balls();
 
     // Set of balls with center coordinates @_centerCoords and radiuses @_radius. 
@@ -35,17 +29,19 @@ struct Balls : public Model {
 
     ~Balls() = default;
 
-    // Computes nodeCoords[i] += dx[i]
-    void moveCenters(std::vector<float>& dx);
+    void initShaderProgram();
 
     // Set nodeCoords[i] = newCoords[i]
     void setCenters(std::vector<float>& newNodes);
 
     // Set a constant color across all balls
-    void setColors(uint8_t R, uint8_t G, uint8_t B);
+    void setColor(uint8_t R, uint8_t G, uint8_t B);
 
     // Set a different color for each ball
-    void setColors(std::vector<uint8_t>& _colors);
+    void setColor(std::vector<uint8_t>& _colors);
+
+    void useCmap(ColorMap& _cmap);
+    void setField(std::vector<float>& fieldValue);
 
     // Set a constant radius accross all balls
     void setRadius(float const r);

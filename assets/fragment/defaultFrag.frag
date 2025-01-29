@@ -14,10 +14,10 @@ uniform bool useCmap = false;
 uniform vec2 cmapRange = vec2(-1.0f, 1.0f);
 uniform sampler1D cmap;
 
-in vec3 vCol;
-in vec3 vLight;
-in vec3 vNormal;
 in vec4 vPos;
+in vec3 vCol;
+in vec3 vNormal;
+in vec3 vLight;
 
 out vec4 FragColor;
 
