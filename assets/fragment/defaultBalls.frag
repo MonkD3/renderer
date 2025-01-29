@@ -1,10 +1,5 @@
 #version 460 core
 
-in vec4 gCenter; // Center of the ball
-in vec4 gPos;    // Position of the fragment
-in vec3 gCol;    // Color of the fragment
-in float gRad;   // Radius of fragment
-
 layout (std140) uniform worldBlock {
     mat4 view;
     mat4 proj;
@@ -14,17 +9,34 @@ layout (std140) uniform worldBlock {
     bvec4 worldOpts;
 };
 
+uniform mat4 model = mat4(1.0f);
+uniform bool useCmap = false;
+uniform vec2 cmapRange = vec2(-1.0f, 1.0f);
+uniform sampler1D cmap;
+
+in vec4 vPos;    // Position of the fragment
+in vec3 vCol;    // Color of the fragment
+in vec3 vNormal; // Normal to the vertex
+in vec3 vLight;  // Where is the light
+in float vRad;   // Radius of fragment
+
 out vec4 FragColor; // Final color of fragment
 
 void main() {
-    vec4 d = gCenter - gPos;
-    if (dot(d, d) > gRad*gRad) discard;
+    vec3 d = vec3(vPos.xy, 0.0f);
+    float z = vRad*vRad - dot(d, d);
+    if (0 > z) {
+        discard;
+    }
+    d.z = sqrt(z); 
+    d /= vRad;
+    vec3 light = normalize(vLight);
+    float brightness = dot(d, light);
 
-    // Light comes from the top left and goes to the bottom right
-    vec4 light = view*vec4(-1.0f, -1.0f, 0.0f, 0.0f);
-    vec3 lightNorm = normalize(light.xyz);
-    d = normalize(d);
+    vec4 col = vec4(vCol, 1.0f);
+    if (useCmap) {
+        col = texture(cmap, (vCol.x - cmapRange.x)/(cmapRange.y - cmapRange.x));
+    }
 
-    float brightness = clamp(dot(d.xyz, lightNorm), 0.1f, 1.0f);
-    FragColor = vec4(brightness * gCol, 1.0f);
+    FragColor = clamp(brightness, 0.0f, 1.0f) * col;
 }
