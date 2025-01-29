@@ -16,12 +16,13 @@ enum colorType {
 
 enum modelBufType {
     MODEL_POS = 0,   // Index of position buffer
-    MODEL_IDX = 1,   // Index of indices buffer in case of EBO
-    MODEL_COL = 2,   // Index of color buffer
-    MODEL_SIZE = 3,  // Index of "size" buffer : any single float 
+    MODEL_COL = 1,   // Index of color buffer
+    MODEL_SIZE = 2,  // Index of "size" buffer : any single float 
                      // that is supposed to give the width/radius... 
                      // of the primitive
-    MODEL_NORMAL = 4, // Index of normal buffer (storing normals to the vertex)
+    MODEL_NORMAL = 3, // Index of normal buffer (storing normals to the vertex)
+    MODEL_TRANS = 4, // Translation of the model (instance position)
+    MODEL_IDX = 15,   // Index of indices buffer in case of EBO
     MODEL_USER_START = 16,  // Special value : Starting index of user-defined buffers
 };
 
@@ -43,6 +44,8 @@ struct Model {
 
     Model();
     ~Model();
+
+    void initShaderProgram();
 
     void setVertexShader(const Shader* vertexShader);
     void setFragmentShader(const Shader* vertexShader);

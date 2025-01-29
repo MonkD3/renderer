@@ -3,6 +3,23 @@
 #include "models/lines.hpp"
 #include "log.h"
 
+void Lines::initShaderProgram(){
+    vshd = new Shader(CMAKE_HOME_DIRECTORY "/assets/vertex/defaultVertex.vert", SHADER_VERTEX);
+    fshd = new Shader(CMAKE_HOME_DIRECTORY "/assets/fragment/defaultFrag.frag", SHADER_FRAGMENT);
+
+    prog = new ShaderProgram();
+    prog->attachShader(vshd);
+    prog->attachShader(fshd);
+    prog->compile();
+
+    vao.bind();
+    // Attribute 1 is the color : set a generic white color
+    vao.setDefaultAttributeValues3f(1, 1.0f, 1.0f, 1.0f);
+
+    // Attribute 2 is the normals, set a generic normal z normal
+    vao.setDefaultAttributeValues4f(2, 0.0f, 0.0f, 1.0f, 0.0f);
+}
+
 Lines::Lines(){}
 
 Lines::Lines(int const _dim, std::vector<float>& nodeCoords, std::vector<int>& lines) : dim(_dim), nElems(lines.size()) {
@@ -20,6 +37,7 @@ Lines::Lines(int const _dim, std::vector<float>& nodeCoords, std::vector<int>& l
     vao.setAttribute(0, dim, GL_FLOAT, GL_FALSE, 0, 0);
     bufIndices[MODEL_IDX] = vao.attachBuffer(indices);
     vao.enableAttribute(0);
+    initShaderProgram();
 }
 
 Lines::Lines(int const _dim, VBO* nodeCoords, EBO* lines) : dim(_dim) {
@@ -33,6 +51,7 @@ Lines::Lines(int const _dim, VBO* nodeCoords, EBO* lines) : dim(_dim) {
     vao.setAttribute(0, dim, GL_FLOAT, GL_FALSE, 0, 0);
     bufIndices[MODEL_IDX] = vao.attachBuffer(lines);
     vao.enableAttribute(0);
+    initShaderProgram();
 }
 
 void Lines::setNodes(std::vector<float>& newNodes){

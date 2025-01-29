@@ -16,6 +16,8 @@ struct Lines : public Model {
 
     ~Lines() = default;
 
+    void initShaderProgram();
+
     // Set nodeCoords[i] = newCoords[i]
     void setNodes(std::vector<float>& newNodes);
 

@@ -10,15 +10,16 @@ struct TriMesh : public Model {
 
     ColorMap cmap;
     // Color of nodes
-    colorType colType;           // Type of node-coloring : 
-                                 //   - COLOR_CONSTANT : each node has the same color (only supply R, G, B)
-                                 //   - COLOR_NODE : each node has a separate color (supply color for each node)
+    colorType colType;     
+
     TriMesh();
 
     // Triangular meshes with nodes coordinates @_nodeCoords and elements @_elem. 
     // Rendering uses default shaders.
     TriMesh(int const dim, std::vector<float>& _nodeCoords, std::vector<int>& _triangles);
     TriMesh(int const dim, VBO* _nodeCoords, EBO* _triangles);
+    
+    void initShaderProgram();
 
     ~TriMesh() = default;
 

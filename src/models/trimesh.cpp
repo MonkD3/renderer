@@ -3,6 +3,23 @@
 #include "models/trimesh.hpp"
 #include "log.h"
 
+void TriMesh::initShaderProgram(){
+    vshd = new Shader(CMAKE_HOME_DIRECTORY "/assets/vertex/defaultVertex.vert", SHADER_VERTEX);
+    fshd = new Shader(CMAKE_HOME_DIRECTORY "/assets/fragment/defaultFrag.frag", SHADER_FRAGMENT);
+
+    prog = new ShaderProgram();
+    prog->attachShader(vshd);
+    prog->attachShader(fshd);
+    prog->compile();
+
+    vao.bind();
+    // Attribute 1 is the color : set a generic white color
+    vao.setDefaultAttributeValues3f(1, 1.0f, 1.0f, 1.0f);
+
+    // Attribute 2 is the normals, set a generic normal z normal
+    vao.setDefaultAttributeValues4f(2, 0.0f, 0.0f, 1.0f, 0.0f);
+}
+
 TriMesh::TriMesh(){}
 
 TriMesh::TriMesh(int const _dim, std::vector<float>& nodeCoords, std::vector<int>& triangles) : dim(_dim), nElems(triangles.size()) {
@@ -23,6 +40,7 @@ TriMesh::TriMesh(int const _dim, std::vector<float>& nodeCoords, std::vector<int
 
     // Default color is set in Model constructor
     colType = COLOR_DEFAULT;
+    initShaderProgram();
 }
 
 TriMesh::TriMesh(int const _dim, VBO* nodeCoords, EBO* triangles) : dim(_dim) {
@@ -39,6 +57,7 @@ TriMesh::TriMesh(int const _dim, VBO* nodeCoords, EBO* triangles) : dim(_dim) {
 
     // Default color is set in Model constructor
     colType = COLOR_DEFAULT;
+    initShaderProgram();
 }
 
 void TriMesh::setNodes(std::vector<float>& newNodes){
@@ -100,13 +119,13 @@ void TriMesh::setField(std::vector<float>& fieldValue){
     if (colType != COLOR_CMAP) return;
 
     vao.bind();
-    if (bufIndices[MODEL_COL] >= 0){
+    if (bufIndices[MODEL_COL] < 0){
         VBO* col = new VBO;
         bufIndices[MODEL_COL] = vao.attachBuffer(col);
     } 
 
     setBuffer(MODEL_COL, fieldValue.size()*sizeof(fieldValue[0]), fieldValue.data());
-    vao.setAttribute(1, 1, GL_FLOAT, false, 0, 0);
+    vao.setAttribute(MODEL_COL, 1, GL_FLOAT, false, 0, 0);
 }
 
 
