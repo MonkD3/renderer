@@ -9,7 +9,7 @@ Shader::Shader() : fname(NULL), id(0), st(NO_SHADER){};
 Shader::Shader(char const* _path, ShaderType _st) : fname(_path), st(_st){ 
     FILE* fd = fopen(fname, "r");
     if (fd == NULL) {
-        ERROR("Can't open file '%s'", fname);
+        RENDERER_ERROR("Can't open file '%s'", fname);
         return;
     }
 
@@ -21,7 +21,7 @@ Shader::Shader(char const* _path, ShaderType _st) : fname(_path), st(_st){
 
     size_t nread = fread(buf, sizeof(char), len, fd);
     if (nread < (size_t) len) {
-        WARNING(
+        RENDERER_WARNING(
             "File '%s' is %u bytes long but only %zu bytes where read, attempting to continue.",
             fname, len, nread);
     }
@@ -33,7 +33,7 @@ Shader::Shader(char const* _path, ShaderType _st) : fname(_path), st(_st){
     id = glCreateShader(st);
 
     // Compile shader
-    DEBUG("Compiling shader '%s' with id %u", fname, id);
+    RENDERER_DEBUG("Compiling shader '%s' with id %u", fname, id);
     char const* shd_src = buf;
     glShaderSource(id, 1, &shd_src, &len);
     glCompileShader(id);
@@ -47,14 +47,14 @@ Shader::Shader(char const* _path, ShaderType _st) : fname(_path), st(_st){
         char* err_msg = new char[log_len+1];
         glGetShaderInfoLog(id, log_len, NULL, err_msg);
         err_msg[log_len] = '\0';
-        ERROR("%s", err_msg);
+        RENDERER_ERROR("%s", err_msg);
         delete [] err_msg;
         return;
     }
 };
 
 Shader::~Shader(){
-    DEBUG("Deleting shader %u", id);
+    RENDERER_DEBUG("Deleting shader %u", id);
     glDeleteShader(id);
 };
 
@@ -64,7 +64,7 @@ ShaderProgram::ShaderProgram() {
 };
 
 ShaderProgram::~ShaderProgram() {
-    DEBUG("Deleting program %u", id);
+    RENDERER_DEBUG("Deleting program %u", id);
     glDeleteProgram(id);
 }
 
@@ -79,14 +79,14 @@ void ShaderProgram::compile(){
     // (Re-)attach the modified shaders
     for (size_t i = 0; i < shd.size(); i++){
         if (!is_compiled || shd[i]->update()) {
-            DEBUG("Attaching shader '%s' at program %d", shd[i]->fname, id);
+            RENDERER_DEBUG("Attaching shader '%s' at program %d", shd[i]->fname, id);
             glAttachShader(id, shd[i]->id);
             should_update = true;
         }
     }
 
     if (should_update) {
-        DEBUG("Linking program %u", id);
+        RENDERER_DEBUG("Linking program %u", id);
         glLinkProgram(id);
 
         GLint res;
@@ -99,7 +99,7 @@ void ShaderProgram::compile(){
             char* err_msg = new char[log_len+1];
             glGetProgramInfoLog(id, log_len+1, NULL, err_msg);
             err_msg[log_len] = '\0';
-            ERROR("%s\n", err_msg);
+            RENDERER_ERROR("%s\n", err_msg);
             delete [] err_msg;
             return;
         }
@@ -118,7 +118,7 @@ int ShaderProgram::getUniformLocation(const std::string& uname) {
     }
 
     int loc = glGetUniformLocation(id, uname.c_str());
-    DEBUG("Inserting uniform '%s' with location %d into the hashtable of program %u", uname.c_str(), loc, id);
+    RENDERER_DEBUG("Inserting uniform '%s' with location %d into the hashtable of program %u", uname.c_str(), loc, id);
     uniformsLocations[uname] = loc;
     return loc;
 }
@@ -129,7 +129,7 @@ unsigned int ShaderProgram::getUniformBlockIndex(const std::string& uname){
     }
 
     unsigned int index = glGetUniformBlockIndex(id, uname.c_str());
-    DEBUG("Inserting uniform block '%s' with index %d into the hashtable of program %u", uname.c_str(), index, id);
+    RENDERER_DEBUG("Inserting uniform block '%s' with index %d into the hashtable of program %u", uname.c_str(), index, id);
     uniformsBlockIndices[uname] = index;
     return index;
 
@@ -137,7 +137,7 @@ unsigned int ShaderProgram::getUniformBlockIndex(const std::string& uname){
 void ShaderProgram::setUniformBlockBinding(const std::string& uname, unsigned int binding){
     unsigned int index = getUniformBlockIndex(uname);
     if (index != GL_INVALID_INDEX) {
-        DEBUG("Set uniform block binding of program %u : index = %u, binding = %u", id, index, binding);
+        RENDERER_DEBUG("Set uniform block binding of program %u : index = %u, binding = %u", id, index, binding);
         glUniformBlockBinding(id, index, binding);
     }
 

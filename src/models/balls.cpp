@@ -74,6 +74,38 @@ Balls::Balls(int const _dim, std::vector<float>& centerCoords, float const radiu
     initShaderProgram();
 }
 
+Balls::Balls(int const _dim, VBO* centerCoords, VBO* radius) : dim(_dim), nElems(centerCoords->size/dim), radType(RADIUS_PER_BALL), colType(COLOR_DEFAULT) {
+    vao.bind();
+
+    centerCoords->bind();
+    vao.setAttribute(MODEL_POS, dim, GL_FLOAT, GL_FALSE, 0, 0);
+    bufIndices[MODEL_POS] = vao.attachBuffer(centerCoords);
+    vao.enableAttribute(MODEL_POS);
+    glVertexAttribDivisor(MODEL_POS, 1);
+
+    radius->bind();
+    vao.setAttribute(MODEL_SIZE, 1, GL_FLOAT, GL_FALSE, 0, 0);
+    bufIndices[MODEL_SIZE] = vao.attachBuffer(radius);
+    vao.enableAttribute(MODEL_SIZE);
+    glVertexAttribDivisor(MODEL_SIZE, 1);
+
+    initShaderProgram();
+}
+
+Balls::Balls(int const _dim, VBO* centerCoords, float const radius) : dim(_dim), nElems(centerCoords->size/dim), radType(RADIUS_CONSTANT), colType(COLOR_DEFAULT) {
+
+    vao.bind();
+
+    centerCoords->bind();
+    vao.setAttribute(MODEL_POS, dim, GL_FLOAT, GL_FALSE, 0, 0);
+    bufIndices[MODEL_POS] = vao.attachBuffer(centerCoords);
+    vao.enableAttribute(MODEL_POS);
+    glVertexAttribDivisor(MODEL_POS, 1);
+
+    glVertexAttrib1f(MODEL_SIZE, radius);
+    initShaderProgram();
+}
+
 
 void Balls::setCenters(std::vector<float>& newCenters){
     setBuffer(MODEL_POS, newCenters.size()*sizeof(newCenters[0]), newCenters.data());
@@ -82,7 +114,7 @@ void Balls::setCenters(std::vector<float>& newCenters){
 void Balls::setColor(uint8_t R, uint8_t G, uint8_t B) {
 
     if (colType != COLOR_CONSTANT) {
-        DEBUG("Changing node-coloring type of balls to COLOR_CONSTANT");
+        RENDERER_DEBUG("Changing node-coloring type of balls to COLOR_CONSTANT");
         colType = COLOR_CONSTANT;
         vao.bind();
         vao.disableAttribute(MODEL_COL);
@@ -101,15 +133,15 @@ void Balls::setColor(std::vector<uint8_t>& colors){
     setBuffer(MODEL_COL, colors.size()*sizeof(colors[0]), colors.data());
 
     if (colType != COLOR_NODE) {
-        DEBUG("Changing node-coloring type of balls to COLOR_NODE");
-        colType = COLOR_NODE;
-        vao.setAttribute(MODEL_COL, 3, GL_FLOAT, true, 0, 0);
+        RENDERER_DEBUG("Changing node-coloring type of balls to COLOR_NODE");
+        vao.setAttribute(MODEL_COL, 3, GL_UNSIGNED_BYTE, true, 0, 0);
         if (colType == COLOR_CMAP){
             prog->use();
             prog->setUniform1b("useCmap", false);
         }
         vao.enableAttribute(MODEL_COL);
         glVertexAttribDivisor(MODEL_COL, 1);
+        colType = COLOR_NODE;
     }
 }
 
@@ -142,7 +174,7 @@ void Balls::setField(std::vector<float>& fieldValue){
 }
 
 void Balls::draw() const {
-    DEBUG("Drawing balls with VAO %u", vao.id);
+    RENDERER_DEBUG("Drawing balls with VAO %u", vao.id);
     vao.bind();
     prog->use();
 

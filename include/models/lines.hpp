@@ -7,6 +7,7 @@ struct Lines : public Model {
     int dim;
     size_t nElems;
 
+    unsigned char color[3];
     Lines();
 
     // Triangular meshes with nodes coordinates @_nodeCoords and elements @_elem. 

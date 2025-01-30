@@ -7,7 +7,7 @@ ColorMap::ColorMap(int _nColors, std::vector<unsigned char>& _colors) : nColors(
     glEnable(GL_TEXTURE_1D);
 
     glGenTextures(1, &id);
-    DEBUG("Create texture %u", id)
+    RENDERER_DEBUG("Create texture %u", id)
     glBindTexture(GL_TEXTURE_1D, id);
 
     glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -17,7 +17,7 @@ ColorMap::ColorMap(int _nColors, std::vector<unsigned char>& _colors) : nColors(
 }
 
 ColorMap::~ColorMap(){
-    DEBUG("Delete texture %u", id)
+    RENDERER_DEBUG("Delete texture %u", id)
     glDeleteTextures(1, &id);
 }
 

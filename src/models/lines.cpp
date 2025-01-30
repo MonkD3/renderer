@@ -59,14 +59,17 @@ void Lines::setNodes(std::vector<float>& newNodes){
 }
 
 void Lines::setColor(uint8_t R, uint8_t G, uint8_t B) {
-    vao.bind();
-    vao.setDefaultAttributeValues3f(MODEL_COL, R/255.f, G/255.f, B/255.f);
+    color[0] = R;
+    color[1] = G;
+    color[2] = B;
 }
 
 void Lines::draw() const {
-    DEBUG("Drawing trimesh with VAO %u", vao.id);
+    RENDERER_DEBUG("Drawing trimesh with VAO %u", vao.id);
     vao.bind();
     prog->use();
+
+    vao.setDefaultAttributeValues3f(MODEL_COL, color[0]/255.f, color[1]/255.f, color[2]/255.f);
 
     glDrawElements(GL_LINES, nElems, GL_UNSIGNED_INT, 0);
 }

@@ -185,7 +185,7 @@ void defaultGLFWFrameBufferSizeCallback(GLFWwindow* window, int width, int heigh
 
 
 Window::Window(int _width, int _height, char const* _name, Monitor* _monitor, Window* _share) : name(_name), width(_width), height(_height){
-    DEBUG("Creating window '%s'", name);
+    RENDERER_DEBUG("Creating window '%s'", name);
     glfwInit();
 
     // =========================== Create window =============================
@@ -197,7 +197,7 @@ Window::Window(int _width, int _height, char const* _name, Monitor* _monitor, Wi
     win = glfwCreateWindow(width, height, name, m, w); 
     if (win == NULL){
         glfwTerminate();
-        CRITICAL_ERROR("Failed to initialize window '%s'", name);
+        RENDERER_CRITICAL_ERROR("Failed to initialize window '%s'", name);
         exit(0);
     }
     glfwMakeContextCurrent(win);
@@ -206,10 +206,10 @@ Window::Window(int _width, int _height, char const* _name, Monitor* _monitor, Wi
     int const version = gladLoadGL(glfwGetProcAddress);
     if (version == 0) {
         glfwTerminate();
-        CRITICAL_ERROR("Failed to initialize GLAD");
+        RENDERER_CRITICAL_ERROR("Failed to initialize GLAD");
         exit(0);
     }
-    DEBUG("Loaded OpenGL %d.%d with GLAD for window '%s'", GLAD_VERSION_MAJOR(version), GLAD_VERSION_MINOR(version), name);
+    RENDERER_DEBUG("Loaded OpenGL %d.%d with GLAD for window '%s'", GLAD_VERSION_MAJOR(version), GLAD_VERSION_MINOR(version), name);
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, GLAD_VERSION_MAJOR(version));
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, GLAD_VERSION_MINOR(version));
@@ -259,7 +259,7 @@ Window::Window(int _width, int _height, char const* _name, Monitor* _monitor, Wi
 }
 
 Window::~Window(){
-    DEBUG("Destroying window '%s'", name);
+    RENDERER_DEBUG("Destroying window '%s'", name);
     glfwDestroyWindow(win);
     delete windata;
     delete scene;

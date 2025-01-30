@@ -26,6 +26,8 @@ struct Balls : public Model {
     // Set of balls with center coordinates @_centerCoords and radiuses @_radius. 
     // Rendering uses white color for each ball
     Balls(int const dim, std::vector<float>& _centerCoords, float const _radius);
+    Balls(int const _dim, VBO* centerCoords, VBO* radius);
+    Balls(int const _dim, VBO* centerCoords, float const radius);
 
     ~Balls() = default;
 

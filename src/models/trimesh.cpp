@@ -68,7 +68,7 @@ void TriMesh::setColor(uint8_t R, uint8_t G, uint8_t B) {
     vao.bind();
 
     if (colType != COLOR_CONSTANT) {
-        DEBUG("Changing node-coloring type of trimesh to COLOR_CONSTANT");
+        RENDERER_DEBUG("Changing node-coloring type of trimesh to COLOR_CONSTANT");
         vao.disableAttribute(MODEL_COL);
         if (colType == COLOR_CMAP){
             prog->use();
@@ -90,7 +90,7 @@ void TriMesh::setColor(std::vector<uint8_t>& colors){
     setBuffer(MODEL_COL, colors.size()*sizeof(colors[0]), colors.data());
 
     if (colType != COLOR_NODE) {
-        DEBUG("Changing node-coloring type of trimesh to COLOR_NODE");
+        RENDERER_DEBUG("Changing node-coloring type of trimesh to COLOR_NODE");
         vao.setAttribute(MODEL_COL, 3, GL_UNSIGNED_BYTE, true, 0, 0);
         if (colType == COLOR_CMAP){
             prog->use();
@@ -130,7 +130,7 @@ void TriMesh::setField(std::vector<float>& fieldValue){
 
 
 void TriMesh::draw() const {
-    DEBUG("Drawing trimesh with VAO %u", vao.id);
+    RENDERER_DEBUG("Drawing trimesh with VAO %u", vao.id);
     vao.bind();
     prog->use();
     if (colType == COLOR_CMAP) cmap.bind();

@@ -16,7 +16,7 @@ Scene::Scene() {
 Scene::~Scene() { }
 
 size_t Scene::addModel(Model* m, bool isRendered) {
-    DEBUG("Add model to scene");
+    RENDERER_DEBUG("Add model to scene");
     m->prog->setUniformBlockBinding("worldBlock", 0);
     models.push_back(m);
     modelIsRendered.push_back(isRendered);

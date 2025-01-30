@@ -6,7 +6,7 @@
 #include <vector>
 
 Model::Model() {
-    DEBUG("Initializing new model");
+    RENDERER_DEBUG("Initializing new model");
 
     // Reserve 16 spots for the renderer. 
     // Indices greater or equal to 16 are considered user-managed
@@ -15,7 +15,7 @@ Model::Model() {
 }
 
 Model::~Model() {
-    DEBUG("Deleting model");
+    RENDERER_DEBUG("Deleting model");
     delete vshd;
     delete fshd;
     delete prog;
@@ -23,14 +23,14 @@ Model::~Model() {
     for (int i = 0; i < MODEL_USER_START; i++){
         int idx = bufIndices[i];
         if (idx >= 0) {
-            DEBUG("Deleting model buffer %u at index %u", idx, i);
+            RENDERER_DEBUG("Deleting model buffer %u at index %u", idx, i);
             delete vao.buffers[idx];
         }
     }
 }
 
 void Model::setBuffer(unsigned int const bufIndex, size_t const bufSize, void const* bufData) {
-    DEBUG("Setting data of model buffer %u at index %u", bufIndices[bufIndex], bufIndex);
+    RENDERER_DEBUG("Setting data of model buffer %u at index %u", bufIndices[bufIndex], bufIndex);
     Buffer* buf = vao.buffers[bufIndices[bufIndex]];
     buf->bind();
     buf->setData(bufSize, bufData);
@@ -40,7 +40,7 @@ unsigned int Model::addBuffer(Buffer* buf){
     vao.bind();
     int idx = vao.attachBuffer(buf);
     bufIndices.push_back(idx);
-    DEBUG("Adding model buffer %u at index %lu", idx, bufIndices.size()-1);
+    RENDERER_DEBUG("Adding model buffer %u at index %lu", idx, bufIndices.size()-1);
     return bufIndices.size() - 1;
 }
 

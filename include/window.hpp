@@ -69,7 +69,7 @@ struct Window {
     ~Window();
 
     void inline setDefaultCallbackOff(callbackType ct) {
-        DEBUG("Setting default callback %d OFF", ct);
+        RENDERER_DEBUG("Setting default callback %d OFF", ct);
         switch (ct) {
             case CALLBACK_CURSOR_POS:
                 useDefaultCursorPositionCallback = false;
@@ -89,7 +89,7 @@ struct Window {
         }
     };
     void inline setDefaultCallbackOn(callbackType ct) {
-        DEBUG("Setting default callback %d ON", ct);
+        RENDERER_DEBUG("Setting default callback %d ON", ct);
         switch (ct) {
             case CALLBACK_CURSOR_POS:
                 useDefaultCursorPositionCallback = true;
