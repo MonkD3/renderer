@@ -7,9 +7,11 @@ My goal is simply to have a library that *simplifies* OpenGL usage without chang
 In this regard, (currently) *every attribute* is public and user-modifiable. If you need access to something in order to write more complex features that are not in the library, you have it. 
 In consequence, you can use parts of the library as helper (for example : reading/compiling shaders) and then do the rest of your program in pure OpenGL.
 
-> [!NOTE] I'm primarily interested in exploratory visualisation for my research topics (computational geometry / numerical methods) and will adapt the library based on these needs.
+> [!NOTE] 
+> I'm primarily interested in exploratory visualisation for my research topics (computational geometry / numerical methods) and will adapt the library based on these needs.
 
-> [!WARNING] The API is unstable.
+> [!WARNING] 
+> The API is unstable.
 
 # Compilation
 
@@ -117,4 +119,5 @@ By default, the renderer simply prints down the key/scancode/action/mods of the 
 
 # Shader Management 
 
-> [!TODO] 
+> [!TODO]
+>
