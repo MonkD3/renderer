@@ -8,6 +8,9 @@ project(Renderer
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 set(BUILD_SHARED_LIBS ON)
 
+# Compile the examples
+option(ENABLE_EXAMPLES OFF)
+
 find_package(
     glfw
     NAMES glfw GLFW glfw3
@@ -35,12 +38,14 @@ add_subdirectory(./include)
 
 target_compile_options(
     renderer PRIVATE
-    -Wall -Werror -Wextra -DCMAKE_HOME_DIRECTORY="${CMAKE_HOME_DIRECTORY}"
+    -Wall -Werror -Wextra -DASSET_DIR="${Renderer_SOURCE_DIR}/assets/"
 )
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     target_compile_options(
         renderer PRIVATE 
         -DVERBOSE=5
+        -g
+        -fsanitize=address
     )
 endif()
 
@@ -51,5 +56,14 @@ install(
     TARGETS renderer
 )
 
-add_subdirectory(./examples/)
-add_subdirectory(./playground/)
+if (ENABLE_EXAMPLES)
+    message("========= Compiling examples ==========")
+    add_subdirectory(./examples/)
+
+    # For examples in development or simple tests that should not be 
+    # committed yet
+    if (IS_DIRECTORY ./playground/)
+        message("========= Compiling playground ==========")
+        add_subdirectory(./playground/)
+    endif()
+endif()

@@ -1,6 +1,11 @@
 link_libraries(renderer)
 
 add_executable(
+    000
+    ./000-empty-window/src.cpp
+)
+
+add_executable(
     001
     ./001-simple-triangle/src.cpp
 )
