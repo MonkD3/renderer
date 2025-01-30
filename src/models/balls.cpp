@@ -14,11 +14,7 @@ void Balls::initShaderProgram(){
     prog->compile();
 
     vao.bind();
-    // Attribute 1 is the color : set a generic white color
-    vao.setDefaultAttributeValues3f(MODEL_COL, 1.0f, 1.0f, 1.0f);
-
-    // Attribute 2 is the normals, set a generic normal z normal
-    vao.setDefaultAttributeValues4f(MODEL_NORMAL, 0.0f, 0.0f, 1.0f, 0.0f);
+    colType = COLOR_DEFAULT;
 
     float instanceVertexPos[12] = {
           1.f, -1.f, 0.0f,  // Bot-right
@@ -120,7 +116,9 @@ void Balls::setColor(uint8_t R, uint8_t G, uint8_t B) {
         vao.disableAttribute(MODEL_COL);
     }
 
-    vao.setDefaultAttributeValues3f(MODEL_COL, R/255.f, G/255.f, B/255.f);
+    color[0] = R;
+    color[1] = G;
+    color[2] = B;
 }
 
 void Balls::setColor(std::vector<uint8_t>& colors){
@@ -177,6 +175,17 @@ void Balls::draw() const {
     RENDERER_DEBUG("Drawing balls with VAO %u", vao.id);
     vao.bind();
     prog->use();
+
+    switch (colType){
+        case COLOR_DEFAULT:
+            vao.setDefaultAttributeValues3f(MODEL_COL, 1.0f, 1.0f, 1.0f);
+            break;
+        case COLOR_CONSTANT:
+            vao.setDefaultAttributeValues3f(MODEL_COL, color[0]/255.f, color[1]/255.f, color[2]/255.f);
+            break;
+        default:
+            break;
+    }
 
     glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, nElems);
 }

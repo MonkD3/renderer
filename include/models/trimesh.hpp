@@ -9,8 +9,9 @@ struct TriMesh : public Model {
     size_t nElems;
 
     ColorMap cmap;
-    // Color of nodes
     colorType colType;     
+    unsigned char col[3]; // In case the color is constant, cache the value 
+                          // to feed it to glVertexAttrib at each draw call
 
     TriMesh();
 

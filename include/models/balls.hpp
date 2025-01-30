@@ -14,8 +14,13 @@ struct Balls : public Model {
 
     radiusType radType;
 
+    float r; // In case the radius is constant, cache the value 
+             // to feed it to glVertexAttrib at each draw call
+
     ColorMap cmap;
     colorType colType; 
+    unsigned char color[3]; // In case the color is constant, cache the value 
+                            // to feed it to glVertexAttrib at each draw call
                            
     Balls();
 

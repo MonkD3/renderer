@@ -13,11 +13,7 @@ void TriMesh::initShaderProgram(){
     prog->compile();
 
     vao.bind();
-    // Attribute 1 is the color : set a generic white color
-    vao.setDefaultAttributeValues3f(MODEL_COL, 1.0f, 1.0f, 1.0f);
-
-    // Attribute 2 is the normals, set a generic normal z normal
-    vao.setDefaultAttributeValues4f(MODEL_NORMAL, 0.0f, 0.0f, 1.0f, 0.0f);
+    colType = COLOR_DEFAULT;
 }
 
 TriMesh::TriMesh(){}
@@ -38,8 +34,6 @@ TriMesh::TriMesh(int const _dim, std::vector<float>& nodeCoords, std::vector<int
     bufIndices[MODEL_IDX] = vao.attachBuffer(indices);
     vao.enableAttribute(MODEL_POS);
 
-    // Default color is set in Model constructor
-    colType = COLOR_DEFAULT;
     initShaderProgram();
 }
 
@@ -55,8 +49,6 @@ TriMesh::TriMesh(int const _dim, VBO* nodeCoords, EBO* triangles) : dim(_dim) {
     bufIndices[MODEL_IDX] = vao.attachBuffer(triangles);
     vao.enableAttribute(MODEL_POS);
 
-    // Default color is set in Model constructor
-    colType = COLOR_DEFAULT;
     initShaderProgram();
 }
 
@@ -77,7 +69,9 @@ void TriMesh::setColor(uint8_t R, uint8_t G, uint8_t B) {
         colType = COLOR_CONSTANT;
     }
 
-    vao.setDefaultAttributeValues3f(MODEL_COL, R/255.f, G/255.f, B/255.f);
+    col[0] = R;
+    col[1] = G;
+    col[2] = B;
 }
 
 void TriMesh::setColor(std::vector<uint8_t>& colors){
@@ -133,7 +127,20 @@ void TriMesh::draw() const {
     RENDERER_DEBUG("Drawing trimesh with VAO %u", vao.id);
     vao.bind();
     prog->use();
-    if (colType == COLOR_CMAP) cmap.bind();
+
+    switch (colType){
+        case COLOR_DEFAULT:
+            vao.setDefaultAttributeValues3f(MODEL_COL, 1.0f, 1.0f, 1.0f);
+            break;
+        case COLOR_CONSTANT:
+            vao.setDefaultAttributeValues3f(MODEL_COL, col[0]/255.f, col[1]/255.f, col[2]/255.f);
+            break;
+        case COLOR_CMAP:
+            cmap.bind();
+            break;
+        default:
+            break;
+    }
 
     glDrawElements(GL_TRIANGLES, nElems, GL_UNSIGNED_INT, 0);
 }

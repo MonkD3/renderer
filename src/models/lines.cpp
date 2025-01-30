@@ -13,11 +13,7 @@ void Lines::initShaderProgram(){
     prog->compile();
 
     vao.bind();
-    // Attribute 1 is the color : set a generic white color
-    vao.setDefaultAttributeValues3f(MODEL_COL, 1.0f, 1.0f, 1.0f);
-
-    // Attribute 2 is the normals, set a generic normal z normal
-    vao.setDefaultAttributeValues4f(MODEL_NORMAL, 0.0f, 0.0f, 1.0f, 0.0f);
+    colType = COLOR_DEFAULT;
 }
 
 Lines::Lines(){}
@@ -59,6 +55,14 @@ void Lines::setNodes(std::vector<float>& newNodes){
 }
 
 void Lines::setColor(uint8_t R, uint8_t G, uint8_t B) {
+
+    if (colType != COLOR_CONSTANT) {
+        RENDERER_DEBUG("Changing node-coloring type of balls to COLOR_CONSTANT");
+        colType = COLOR_CONSTANT;
+        vao.bind();
+        vao.disableAttribute(MODEL_COL);
+    }
+
     color[0] = R;
     color[1] = G;
     color[2] = B;
@@ -69,7 +73,16 @@ void Lines::draw() const {
     vao.bind();
     prog->use();
 
-    vao.setDefaultAttributeValues3f(MODEL_COL, color[0]/255.f, color[1]/255.f, color[2]/255.f);
+    switch (colType){
+        case COLOR_DEFAULT:
+            vao.setDefaultAttributeValues3f(MODEL_COL, 1.0f, 1.0f, 1.0f);
+            break;
+        case COLOR_CONSTANT:
+            vao.setDefaultAttributeValues3f(MODEL_COL, color[0]/255.f, color[1]/255.f, color[2]/255.f);
+            break;
+        default:
+            break;
+    }
 
     glDrawElements(GL_LINES, nElems, GL_UNSIGNED_INT, 0);
 }

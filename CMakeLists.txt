@@ -48,8 +48,6 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
         -fsanitize=address
     )
 endif()
-target_compile_options(
-    renderer PRIVATE -DVERBOSE=5)
 
 target_link_libraries(renderer PUBLIC glfw glm OpenGL glad)
 
