@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.13)
 
 project(Renderer
     CXX
@@ -33,8 +33,8 @@ add_subdirectory(./deps/glad/)
 
 # Initialize an empty string for the source files
 add_library(renderer SHARED)
-add_subdirectory(./src)
-add_subdirectory(./include)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 target_compile_options(
     renderer PRIVATE
@@ -48,7 +48,8 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
         -fsanitize=address
     )
 endif()
-
+target_compile_options(
+    renderer PRIVATE -DVERBOSE=5)
 
 target_link_libraries(renderer PUBLIC glfw glm OpenGL glad)
 
@@ -58,12 +59,12 @@ install(
 
 if (ENABLE_EXAMPLES)
     message("========= Compiling examples ==========")
-    add_subdirectory(./examples/)
+    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/examples/)
 
     # For examples in development or simple tests that should not be 
     # committed yet
-    if (IS_DIRECTORY ./playground/)
+    if (IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/playground/)
         message("========= Compiling playground ==========")
-        add_subdirectory(./playground/)
+        add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/playground/)
     endif()
 endif()
