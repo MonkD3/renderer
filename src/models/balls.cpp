@@ -5,8 +5,8 @@
 #include "shader.hpp"
 
 void Balls::initShaderProgram(){
-    vshd = new Shader(CMAKE_HOME_DIRECTORY "/assets/vertex/defaultBalls.vert", SHADER_VERTEX);
-    fshd = new Shader(CMAKE_HOME_DIRECTORY "/assets/fragment/defaultBalls.frag", SHADER_FRAGMENT);
+    vshd = new Shader(ASSET_DIR "vertex/defaultBalls.vert", SHADER_VERTEX);
+    fshd = new Shader(ASSET_DIR "fragment/defaultBalls.frag", SHADER_FRAGMENT);
 
     prog = new ShaderProgram();
     prog->attachShader(vshd);

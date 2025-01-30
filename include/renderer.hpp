@@ -3,6 +3,6 @@
 #include "glad/gl.h"
 #include <GLFW/glfw3.h>
 
-#ifndef CMAKE_HOME_DIRECTORY
-#define CMAKE_HOME_DIRECTORY ".."
+#ifndef ASSET_DIR
+#define ASSET_DIR ".."
 #endif

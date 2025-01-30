@@ -4,8 +4,8 @@
 #include "log.h"
 
 void Lines::initShaderProgram(){
-    vshd = new Shader(CMAKE_HOME_DIRECTORY "/assets/vertex/defaultVertex.vert", SHADER_VERTEX);
-    fshd = new Shader(CMAKE_HOME_DIRECTORY "/assets/fragment/defaultFrag.frag", SHADER_FRAGMENT);
+    vshd = new Shader(ASSET_DIR "vertex/defaultVertex.vert", SHADER_VERTEX);
+    fshd = new Shader(ASSET_DIR "fragment/defaultFrag.frag", SHADER_FRAGMENT);
 
     prog = new ShaderProgram();
     prog->attachShader(vshd);
@@ -14,10 +14,10 @@ void Lines::initShaderProgram(){
 
     vao.bind();
     // Attribute 1 is the color : set a generic white color
-    vao.setDefaultAttributeValues3f(1, 1.0f, 1.0f, 1.0f);
+    vao.setDefaultAttributeValues3f(MODEL_COL, 1.0f, 1.0f, 1.0f);
 
     // Attribute 2 is the normals, set a generic normal z normal
-    vao.setDefaultAttributeValues4f(2, 0.0f, 0.0f, 1.0f, 0.0f);
+    vao.setDefaultAttributeValues4f(MODEL_NORMAL, 0.0f, 0.0f, 1.0f, 0.0f);
 }
 
 Lines::Lines(){}
@@ -34,9 +34,9 @@ Lines::Lines(int const _dim, std::vector<float>& nodeCoords, std::vector<int>& l
     EBO* indices = new EBO;
     indices->bind();
     indices->setData(sizeof(lines[0])*lines.size(), lines.data());
-    vao.setAttribute(0, dim, GL_FLOAT, GL_FALSE, 0, 0);
+    vao.setAttribute(MODEL_POS, dim, GL_FLOAT, GL_FALSE, 0, 0);
     bufIndices[MODEL_IDX] = vao.attachBuffer(indices);
-    vao.enableAttribute(0);
+    vao.enableAttribute(MODEL_POS);
     initShaderProgram();
 }
 
@@ -48,9 +48,9 @@ Lines::Lines(int const _dim, VBO* nodeCoords, EBO* lines) : dim(_dim) {
     bufIndices[MODEL_POS] = vao.attachBuffer(nodeCoords);
 
     lines->bind();
-    vao.setAttribute(0, dim, GL_FLOAT, GL_FALSE, 0, 0);
+    vao.setAttribute(MODEL_POS, dim, GL_FLOAT, GL_FALSE, 0, 0);
     bufIndices[MODEL_IDX] = vao.attachBuffer(lines);
-    vao.enableAttribute(0);
+    vao.enableAttribute(MODEL_POS);
     initShaderProgram();
 }
 
@@ -60,7 +60,7 @@ void Lines::setNodes(std::vector<float>& newNodes){
 
 void Lines::setColor(uint8_t R, uint8_t G, uint8_t B) {
     vao.bind();
-    vao.setDefaultAttributeValues3f(1, R/255.f, G/255.f, B/255.f);
+    vao.setDefaultAttributeValues3f(MODEL_COL, R/255.f, G/255.f, B/255.f);
 }
 
 void Lines::draw() const {
