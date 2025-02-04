@@ -34,8 +34,6 @@ struct Balls : public Model {
     Balls(int const _dim, VBO* centerCoords, VBO* radius);
     Balls(int const _dim, VBO* centerCoords, float const radius);
 
-    ~Balls() = default;
-
     void initShaderProgram();
 
     // Set nodeCoords[i] = newCoords[i]

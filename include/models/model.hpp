@@ -43,7 +43,7 @@ struct Model {
     ShaderProgram* prog; // Shader program to use for rendering the model. Default is constant white.
 
     Model();
-    ~Model();
+    virtual ~Model();
 
     void initShaderProgram();
 

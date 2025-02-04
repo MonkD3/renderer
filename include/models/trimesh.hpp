@@ -22,8 +22,6 @@ struct TriMesh : public Model {
     
     void initShaderProgram();
 
-    ~TriMesh() = default;
-
     // Set nodeCoords[i] = newCoords[i]
     void setNodes(std::vector<float>& newNodes);
 

@@ -54,6 +54,11 @@ void Lines::setNodes(std::vector<float>& newNodes){
     setBuffer(MODEL_POS, newNodes.size()*sizeof(newNodes[0]), newNodes.data());
 }
 
+void Lines::setIndices(std::vector<int>& newIndices){
+    setBuffer(MODEL_IDX, newIndices.size()*sizeof(newIndices[0]), newIndices.data());
+    nElems = newIndices.size();
+}
+
 void Lines::setColor(uint8_t R, uint8_t G, uint8_t B) {
 
     if (colType != COLOR_CONSTANT) {
