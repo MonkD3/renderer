@@ -25,7 +25,7 @@ find_library(
 
 find_package( 
     glm 
-    NAMES glm
+    CONFIG
     REQUIRED
 )
 
@@ -49,7 +49,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     )
 endif()
 
-target_link_libraries(renderer PUBLIC glfw glm OpenGL glad)
+target_link_libraries(renderer PUBLIC glfw glm::glm OpenGL glad)
 
 install(
     TARGETS renderer
