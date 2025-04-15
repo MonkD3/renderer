@@ -25,6 +25,8 @@ struct TriMesh : public Model {
     // Set nodeCoords[i] = newCoords[i]
     void setNodes(std::vector<float>& newNodes);
 
+    void setIndices(std::vector<int>& newTri);
+
     // Set single color for all nodes
     void setColor(uint8_t R, uint8_t G, uint8_t B);
     // Set a color for each node, triangle color

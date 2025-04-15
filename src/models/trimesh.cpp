@@ -56,6 +56,11 @@ void TriMesh::setNodes(std::vector<float>& newNodes){
     setBuffer(MODEL_POS, newNodes.size()*sizeof(newNodes[0]), newNodes.data());
 }
 
+void TriMesh::setIndices(std::vector<int>& newTri){
+    setBuffer(MODEL_IDX, newTri.size()*sizeof(newTri[0]), newTri.data());
+    nElems = newTri.size();
+}
+
 void TriMesh::setColor(uint8_t R, uint8_t G, uint8_t B) {
     vao.bind();
 
@@ -116,7 +121,7 @@ void TriMesh::setField(std::vector<float>& fieldValue){
     if (bufIndices[MODEL_COL] < 0){
         VBO* col = new VBO;
         bufIndices[MODEL_COL] = vao.attachBuffer(col);
-    } 
+    }
 
     setBuffer(MODEL_COL, fieldValue.size()*sizeof(fieldValue[0]), fieldValue.data());
     vao.setAttribute(MODEL_COL, 1, GL_FLOAT, false, 0, 0);
