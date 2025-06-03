@@ -23,6 +23,14 @@ size_t Scene::addModel(Model* m, bool isRendered) {
     return models.size() - 1;
 }
 
+void Scene::setClipPlane(float const * const eq){
+    glEnable(GL_CLIP_DISTANCE0);
+    worldBlock.clipplane[0] = eq[0];
+    worldBlock.clipplane[1] = eq[1];
+    worldBlock.clipplane[2] = eq[2];
+    worldBlock.clipplane[3] = eq[3];
+}
+
 void Scene::draw() const {
 
     Model* model;

@@ -6,6 +6,7 @@ layout (std140) uniform worldBlock {
     mat4 iview;
     vec4 light;
     vec4 scalings;
+    vec4 clipplane;
     bvec4 worldOpts;
 };
 

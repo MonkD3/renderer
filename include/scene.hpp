@@ -24,6 +24,8 @@ struct Scene {
     // Add the model @m to the rendered models in the scene
     size_t addModel(Model* m, bool isRendered = true);
 
+    void setClipPlane(float const * const eq);
+
     // Call model.draw() for each model in @models.
     // Additionnally set up the transforms
     void draw() const; 

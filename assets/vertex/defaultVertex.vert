@@ -10,6 +10,7 @@ layout (std140) uniform worldBlock {
     mat4 iview;
     vec4 light;
     vec4 scalings;
+    vec4 clipplane;
     bvec4 worldOpts;
 };
 
@@ -19,10 +20,12 @@ out vec3 vCol;
 out vec3 vLight;
 out vec3 vNormal;
 out vec4 vPos;
+out float gl_ClipDistance[1];
 
 void main(){
     vPos = view * model * iPos;
-    gl_Position = proj * vPos;
+    gl_ClipDistance[0] = dot(iPos, clipplane);
+    gl_Position = proj * vec4(vPos.x, vPos.y, -vPos.z, vPos.w);
     vCol = iCol;
     
     // We use lighting 

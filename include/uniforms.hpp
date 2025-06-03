@@ -16,6 +16,9 @@ struct WorldUniformBlock {
     //     scalings[2] and scalings[3] : reserved for future use
     glm::vec4 scalings = glm::vec4(1.0f);
 
+    // Clipping plane (only one)
+    glm::vec4 clipplane = glm::vec4(0.0f);
+
     // Options : 
     //    opts[0] = true if lighting is enabled, false if it is not
     //    opts[1] = true if light is pointwise (i.e. @light is a position)
