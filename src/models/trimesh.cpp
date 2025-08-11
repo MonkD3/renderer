@@ -103,15 +103,13 @@ void TriMesh::setColor(std::vector<uint8_t>& colors){
 void TriMesh::useCmap(ColorMap& _cmap) {
     vao.bind();
     cmap = _cmap;
-    if (colType != COLOR_CMAP) {
-        if (colType == COLOR_DEFAULT || colType == COLOR_CONSTANT){
-            vao.enableAttribute(MODEL_COL);
-        }
-        prog->use();
-        prog->setUniform1b("useCmap", true);
-        prog->setUniform2f("cmapRange", cmap.cmin, cmap.cmax);
-        colType = COLOR_CMAP;
+    if (colType != COLOR_CMAP){
+        vao.enableAttribute(MODEL_COL);
     }
+    prog->use();
+    prog->setUniform1b("useCmap", true);
+    prog->setUniform2f("cmapRange", cmap.cmin, cmap.cmax);
+    colType = COLOR_CMAP;
 }
 
 void TriMesh::setField(std::vector<float>& fieldValue){
