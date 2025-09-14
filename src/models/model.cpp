@@ -10,7 +10,7 @@ Model::Model() {
 
     // Reserve 16 spots for the renderer. 
     // Indices greater or equal to 16 are considered user-managed
-    bufIndices.reserve(MODEL_USER_START);
+    bufIndices.resize(MODEL_USER_START);
     for (int i = 0; i < MODEL_USER_START; i++) bufIndices[i] = -1;
 }
 
